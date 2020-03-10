@@ -1,0 +1,27 @@
+language: php
+os: linux
+
+php:
+  - 7.2
+  - 7.3
+  - 7.4
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - composer self-update
+
+install:
+  - composer install --prefer-dist --no-progress --no-suggest
+
+before_script:
+  - wget https://phar.phpunit.de/phpunit-8.phar -O phpunit.phar
+  - wget https://cs.symfony.com/download/php-cs-fixer-v2.phar -O php-cs-fixer.phar
+  - wget https://github.com/phpstan/phpstan/raw/master/phpstan.phar -O phpstan.phar
+
+script:
+  - php phpunit.phar
+  - php php-cs-fixer.phar fix --dry-run --diff --no-ansi
+  - php phpstan.phar analyse
