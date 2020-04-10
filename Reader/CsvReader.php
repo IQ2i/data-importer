@@ -11,8 +11,12 @@
 
 namespace IQ2i\DataImporter\Reader;
 
+use IQ2i\DataImporter\Traits\SerializerTrait;
+
 class CsvReader implements ReaderInterface
 {
+    use SerializerTrait;
+
     const FILE_REGEX_KEY = 'csv_file_regex';
     const DELIMITER_KEY = 'csv_delimiter';
     const ENCLOSURE_KEY = 'csv_enclosure';
@@ -21,7 +25,6 @@ class CsvReader implements ReaderInterface
     const NO_HEADERS_KEY = 'no_headers';
 
     private $file;
-    private $dto;
     private $count = 0;
     private $index = 1;
     private $defaultContext = [
@@ -74,22 +77,6 @@ class CsvReader implements ReaderInterface
             $this->next();
         }
         $this->rewind();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDto(): ?string
-    {
-        return $this->dto;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDto(string $dto): void
-    {
-        $this->dto = $dto;
     }
 
     /**
