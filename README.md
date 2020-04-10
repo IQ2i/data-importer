@@ -17,8 +17,49 @@ The mandatory parts are the reader and the processor.
 ### Reader
 
 The reader describes how DataImporter must to read data in your files.
+This library offers you two readers, one for CSV files and another for XML files.
 
-This library offers you a default reader for CSV files.
+#### XmlReader
+
+XmlReader let you specify the node you want to process by passing a new context in constructor.
+Take the following XML file:
+
+```xml
+<?xml version="1.0"?>
+<catalog>
+    <author>
+        <name>Gambardella, Matthew</name>
+        <books>
+            <book>
+                <title>XML Developer's Guide</title>
+                <genre>Computer</genre>
+                <price>44.95</price>
+                <description>An in-depth look at creating applications with XML.</description>
+            </book>
+            <book>
+                <title>Midnight Rain</title>
+                <genre>Fantasy</genre>
+                <price>5.95</price>
+                <description>A former architect battles corporate zombies, an evil sorceress, and her own childhood to become queen of the world.</description>
+            </book>
+        </books>
+    </author>
+</catalog>
+```
+
+If you want to iterate on the `<book>` node, you must give the parent node to the reader:
+
+```php
+use IQ2i\DataImporter\Reader\XmlReader;
+
+// you can specify an other delimiter character
+$xmlReader = new XmlReader([
+    XmlReader::XPATH_KEY => 'catalog/author/books',
+]);
+```
+
+#### CsvReader
+
 By default, we consider that the CSV file has headers but you can change this behavior by passing a new context to the CsvReader.
 
 ```php
