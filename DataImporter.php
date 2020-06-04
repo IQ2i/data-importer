@@ -84,6 +84,7 @@ class DataImporter
             $finder
                 ->in($path)
                 ->name($regex ?? $this->reader->getDefaultFileRegex())
+                ->depth('== 0')
                 ->sortByModifiedTime();
         } catch (DirectoryNotFoundException $exception) {
             throw new \InvalidArgumentException('The path "'.$path.'" is not a valid folder path.');
