@@ -40,7 +40,7 @@ class DataImporter
     public function execute(string $path, ?string $regex = null)
     {
         // check if regex is valid
-        if (null !== $regex && !@preg_match($regex, '')) {
+        if (null !== $regex && false === @preg_match($regex, '')) {
             throw new \InvalidArgumentException('The regex "'.$regex.'" is invalid.');
         }
 
