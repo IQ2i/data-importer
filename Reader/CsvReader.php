@@ -65,6 +65,7 @@ class CsvReader implements ReaderInterface
         );
 
         // init headers
+        $this->defaultContext[self::HEADERS_KEY] = [];
         if (!$this->defaultContext[self::NO_HEADERS_KEY]) {
             $this->rewind();
             $this->defaultContext[self::HEADERS_KEY] = $this->file->current();
