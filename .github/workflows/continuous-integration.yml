@@ -1,0 +1,36 @@
+name: "Continuous Integration"
+on: [push, pull_request]
+
+jobs:
+  tests:
+    name: "CI"
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+          - "7.2"
+          - "7.3"
+          - "7.4"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          tools: composer:v1, php-cs-fixer, phpstan, phpunit
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Test PHPUnit
+        run: phpunit
+
+      - name: Test PHP-CS-Fixer
+        run: hp-cs-fixer fix --dry-run --diff --no-ansi
+
+      - name: Test PHPStan
+        run: phpstan analyse
