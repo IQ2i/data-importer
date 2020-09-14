@@ -1,6 +1,6 @@
 # iq2i/data-importer
 
-[![Build Status](https://travis-ci.org/IQ2i/data-importer.svg?branch=master)](https://travis-ci.org/IQ2i/data-importer)
+[![Continuous Integration](https://github.com/IQ2i/data-importer/workflows/Continuous%20Integration/badge.svg?branch=master)](https://github.com/IQ2i/data-importer/actions)
 
 A PHP library to easily manage and import large data file.
 
