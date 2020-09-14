@@ -21,7 +21,7 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           php-version: "${{ matrix.php-version }}"
-          tools: composer:v1, php-cs-fixer, phpstan, phpunit
+          tools: composer:v1, php-cs-fixer, phpstan:8.5.8, phpunit
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
