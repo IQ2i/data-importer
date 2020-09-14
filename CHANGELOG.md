@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.2.0
+-----
+
+* fix header reset when multiple files
+* move to Github Actions
+
 1.1.1
 -----
 
