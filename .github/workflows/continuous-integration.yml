@@ -30,7 +30,7 @@ jobs:
         run: phpunit
 
       - name: Test PHP-CS-Fixer
-        run: hp-cs-fixer fix --dry-run --diff --no-ansi
+        run: php-cs-fixer fix --dry-run --diff --no-ansi
 
       - name: Test PHPStan
         run: phpstan analyse
