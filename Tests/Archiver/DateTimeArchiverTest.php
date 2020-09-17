@@ -26,12 +26,13 @@ class DateTimeArchiverTest extends TestCase
             444,
             [
                 'import' => [
-                    'books.csv' => file_get_contents(__DIR__.'/../fixtures/csv/books_with_headers.csv')
+                    'books.csv' => file_get_contents(__DIR__.'/../fixtures/csv/books_with_headers.csv'),
                 ],
-                'archives' => []
+                'archives' => [],
             ]
         );
     }
+
     public function testArchive()
     {
         // create archiver
