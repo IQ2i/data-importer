@@ -16,19 +16,26 @@ use PHPUnit\Framework\TestCase;
 
 class XmlReaderTest extends TestCase
 {
-    public function testReadXml()
+    public function testReadXmlWithXpath()
     {
         // init reader
         $reader = new XmlReader([
-            XmlReader::XPATH_KEY => 'catalog',
+            XmlReader::XPATH_KEY => 'shop/catalog',
         ]);
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/books.xml'));
+        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_with_xpath.xml'));
+
+        // test default configuration
+        $this->assertEquals('/.xml/', $reader->getDefaultFileRegex());
 
         // test denormalization
         $this->assertTrue($reader->isDenormalizable());
 
         // test count
-        $this->assertEquals(12, count($reader));
+        $this->assertEquals(2, count($reader));
+
+        // test index
+        $this->assertEquals(1, $reader->index());
+        $this->assertEquals('book', $reader->key());
 
         // test headers
         $this->assertEquals(
@@ -48,9 +55,13 @@ class XmlReaderTest extends TestCase
 
         // test content
         $reader->next();
+        $this->assertEquals(2, $reader->index());
         $this->assertEquals(
             [
-                'author'      => 'Ralls, Kim',
+                'author'      => [
+                    'firstname' => 'Kim',
+                    'lastname'  => 'Ralls',
+                ],
                 'title'       => 'Midnight Rain',
                 'genre'       => 'Fantasy',
                 'price'       => '5.95',
@@ -58,5 +69,90 @@ class XmlReaderTest extends TestCase
             ],
             $reader->current()
         );
+
+        // test and of file
+        $reader->next();
+        $this->assertEquals([], $reader->current());
+    }
+
+    public function testReadXmlWithoutXpath()
+    {
+        // init reader
+        $reader = new XmlReader();
+        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_without_xpath.xml'));
+
+        // test default configuration
+        $this->assertEquals('/.xml/', $reader->getDefaultFileRegex());
+
+        // test denormalization
+        $this->assertTrue($reader->isDenormalizable());
+
+        // test count
+        $this->assertEquals(2, count($reader));
+
+        // test index
+        $this->assertEquals(1, $reader->index());
+        $this->assertEquals('book', $reader->key());
+
+        // test headers
+        $this->assertEquals(
+            ['author', 'title', 'genre', 'price', 'description'],
+            array_keys($reader->current())
+        );
+        $this->assertArrayHasKey('author', $reader->current());
+        $this->assertNotNull($reader->current()['author']);
+        $this->assertArrayHasKey('title', $reader->current());
+        $this->assertNotNull($reader->current()['title']);
+        $this->assertArrayHasKey('genre', $reader->current());
+        $this->assertNotNull($reader->current()['genre']);
+        $this->assertArrayHasKey('price', $reader->current());
+        $this->assertNotNull($reader->current()['price']);
+        $this->assertArrayHasKey('description', $reader->current());
+        $this->assertNotNull($reader->current()['description']);
+
+        // test content
+        $reader->next();
+        $this->assertEquals(2, $reader->index());
+        $this->assertEquals(
+            [
+                'author'      => [
+                    'firstname' => 'Kim',
+                    'lastname'  => 'Ralls',
+                ],
+                'title'       => 'Midnight Rain',
+                'genre'       => 'Fantasy',
+                'price'       => '5.95',
+                'description' => 'A former architect battles corporate zombies, an evil sorceress, and her own childhood to become queen of the world.',
+            ],
+            $reader->current()
+        );
+
+        // test and of file
+        $reader->next();
+        $this->assertEquals([], $reader->current());
+    }
+
+    public function testReadXmlWithIncorrectRootXpath()
+    {
+        // test exception
+        $this->expectException(\InvalidArgumentException::class);
+
+        // init reader
+        $reader = new XmlReader([
+            XmlReader::XPATH_KEY => 'foo',
+        ]);
+        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_with_xpath.xml'));
+    }
+
+    public function testReadXmlWithIncorrectXpath()
+    {
+        // test exception
+        $this->expectException(\InvalidArgumentException::class);
+
+        // init reader
+        $reader = new XmlReader([
+            XmlReader::XPATH_KEY => 'shop/foo',
+        ]);
+        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_with_xpath.xml'));
     }
 }

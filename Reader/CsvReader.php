@@ -151,12 +151,13 @@ class CsvReader implements ReaderInterface
     public function rewind()
     {
         $this->file->rewind();
-        $this->index = 1;
 
         // skip headers
         if (!empty($this->defaultContext[self::HEADERS_KEY])) {
             $this->next();
         }
+
+        $this->index = 1;
     }
 
     /**
