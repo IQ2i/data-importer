@@ -39,10 +39,6 @@ class CsvReader implements ReaderInterface
     public function __construct(array $defaultContext = [])
     {
         $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
-
-        if (\PHP_VERSION_ID < 70400 && '' === $this->defaultContext[self::ESCAPE_CHAR_KEY]) {
-            $this->defaultContext[self::ESCAPE_CHAR_KEY] = '\\';
-        }
     }
 
     /**
@@ -151,12 +147,13 @@ class CsvReader implements ReaderInterface
     public function rewind()
     {
         $this->file->rewind();
-        $this->index = 1;
 
         // skip headers
         if (!empty($this->defaultContext[self::HEADERS_KEY])) {
             $this->next();
         }
+
+        $this->index = 1;
     }
 
     /**

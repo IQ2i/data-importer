@@ -22,13 +22,20 @@ class CsvReaderTest extends TestCase
         $reader = new CsvReader([
             CsvReader::DELIMITER_KEY => ';',
         ]);
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/books_with_headers.csv'));
+        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/csv/books_with_headers.csv'));
+
+        // test default configuration
+        $this->assertEquals('/.csv/', $reader->getDefaultFileRegex());
 
         // test denormalization
         $this->assertTrue($reader->isDenormalizable());
 
         // test count
-        $this->assertEquals(12, count($reader));
+        $this->assertEquals(2, count($reader));
+
+        // test index
+        $this->assertEquals(1, $reader->index());
+        $this->assertEquals(1, $reader->key());
 
         // test headers
         $this->assertEquals(
@@ -46,8 +53,9 @@ class CsvReaderTest extends TestCase
         $this->assertArrayHasKey('description', $reader->current());
         $this->assertNotNull($reader->current()['description']);
 
-        // test content
+        // test line
         $reader->next();
+        $this->assertEquals(2, $reader->index());
         $this->assertEquals(
             [
                 'author'      => 'Ralls, Kim',
@@ -58,6 +66,10 @@ class CsvReaderTest extends TestCase
             ],
             $reader->current()
         );
+
+        // test and of file
+        $reader->next();
+        $this->assertEquals([], $reader->current());
     }
 
     public function testReadCsvWithoutHeader()
@@ -67,13 +79,20 @@ class CsvReaderTest extends TestCase
             CsvReader::DELIMITER_KEY  => ';',
             CsvReader::NO_HEADERS_KEY => true,
         ]);
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/books_without_headers.csv'));
+        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/csv/books_without_headers.csv'));
+
+        // test default configuration
+        $this->assertEquals('/.csv/', $reader->getDefaultFileRegex());
 
         // test denormalization
         $this->assertFalse($reader->isDenormalizable());
 
         // test count
-        $this->assertEquals(12, count($reader));
+        $this->assertEquals(2, count($reader));
+
+        // test index
+        $this->assertEquals(1, $reader->index());
+        $this->assertEquals(0, $reader->key());
 
         // test headers
         $this->assertEquals(
@@ -83,6 +102,7 @@ class CsvReaderTest extends TestCase
 
         // test content
         $reader->next();
+        $this->assertEquals(2, $reader->index());
         $this->assertEquals(
             [
                 'Ralls, Kim',
@@ -93,5 +113,9 @@ class CsvReaderTest extends TestCase
             ],
             $reader->current()
         );
+
+        // test and of file
+        $reader->next();
+        $this->assertEquals([], $reader->current());
     }
 }

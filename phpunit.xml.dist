@@ -15,4 +15,15 @@
             <directory suffix=".php">./Tests/</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./Archiver</directory>
+            <directory suffix=".php">./Exchange</directory>
+            <directory suffix=".php">./Processor</directory>
+            <directory suffix=".php">./Reader</directory>
+            <directory suffix=".php">./Traits</directory>
+            <file>./DataImporter.php</file>
+        </whitelist>
+    </filter>
 </phpunit>

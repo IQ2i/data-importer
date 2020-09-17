@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<shop>
+    <catalog>
+        <book>
+            <author>
+                <firstname>Matthew</firstname>
+                <lastname>Gambardella</lastname>
+            </author>
+            <title>XML Developer's Guide</title>
+            <genre>Computer</genre>
+            <price>44.95</price>
+            <description>An in-depth look at creating applications with XML.</description>
+        </book>
+        <book>
+            <author>
+                <firstname>Kim</firstname>
+                <lastname>Ralls</lastname>
+            </author>
+            <title>Midnight Rain</title>
+            <genre>Fantasy</genre>
+            <price>5.95</price>
+            <description>A former architect battles corporate zombies, an evil sorceress, and her own childhood to become queen of the world.</description>
+        </book>
+    </catalog>
+</shop>

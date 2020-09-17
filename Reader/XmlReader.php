@@ -31,14 +31,18 @@ class XmlReader implements ReaderInterface
         if (null === $this->defaultContext[self::XPATH_KEY]) {
             $this->file = new \SimpleXMLIterator($file->getPathname(), null, true);
         } else {
+            // init SimpleXMLElement from path
+            $element = new \SimpleXMLElement($file->getPathname(), null, true);
+
             // explode string into array
             $nodes = explode('/', $this->defaultContext[self::XPATH_KEY]);
 
-            // remove first element
-            array_shift($nodes);
+            // get first node (current element node)
+            $rootNode = array_shift($nodes);
 
-            // init SimpleXMLElement from path
-            $element = new \SimpleXMLElement($file->getPathname(), null, true);
+            if ($rootNode !== $element->getName()) {
+                throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::XPATH_KEY].'" is incorrect.');
+            }
 
             // go to the asked node
             foreach ($nodes as $node) {

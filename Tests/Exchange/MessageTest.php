@@ -16,9 +16,9 @@ use IQ2i\DataImporter\Exchange\MessageFactory;
 use IQ2i\DataImporter\Reader\CsvReader;
 use PHPUnit\Framework\TestCase;
 
-class MessageFactoryTest extends TestCase
+class MessageTest extends TestCase
 {
-    public function testMessageCreation()
+    public function testMessage()
     {
         // init file
         $file = new \SplFileInfo(__DIR__.'/../fixtures/csv/books_with_headers.csv');
@@ -27,19 +27,14 @@ class MessageFactoryTest extends TestCase
         $reader = new CsvReader();
         $reader->setFile($file->openFile());
 
-        // create message from factory
-        $factoryMessage = MessageFactory::create($file, $reader, $reader->current());
+        // create message
+        $message = MessageFactory::create($file, $reader, $reader->current());
 
-        // create message manually
-        $manuallyMessage = new Message(
-            $file->getFilename(),
-            $file->getPathname(),
-            $reader->index(),
-            $reader->count(),
-            $reader->current()
-        );
-
-        // test correspondence
-        $this->assertEquals($factoryMessage, $manuallyMessage);
+        // test getter
+        $this->assertEquals($file->getFilename(), $message->getFileName());
+        $this->assertEquals($file->getPathname(), $message->getFilePath());
+        $this->assertEquals($reader->index(), $message->getCurrentIteration());
+        $this->assertEquals($reader->count(), $message->getTotalIteration());
+        $this->assertEquals($reader->current(), $message->getData());
     }
 }
