@@ -12,7 +12,6 @@
 namespace IQ2i\DataImporter\Reader;
 
 use IQ2i\DataImporter\Traits\SerializerTrait;
-use phpDocumentor\Reflection\Utils;
 
 class CsvReader implements ReaderInterface
 {
@@ -116,6 +115,7 @@ class CsvReader implements ReaderInterface
 
         if (!empty($this->defaultContext[self::HEADERS_KEY])) {
             $current = array_combine($this->defaultContext[self::HEADERS_KEY], $this->file->current());
+
             return false !== $current ? $current : [];
         }
 
