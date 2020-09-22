@@ -19,7 +19,8 @@
         "symfony/serializer": "^4.0|^5.0"
     },
     "require-dev": {
-        "mikey179/vfsstream": "^1.6"
+        "mikey179/vfsstream": "^1.6",
+        "phpunit/phpunit": "^8|^9"
     },
     "autoload": {
         "psr-4": { "IQ2i\\DataImporter\\": "" }

@@ -21,7 +21,7 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           php-version: "${{ matrix.php-version }}"
-          tools: composer:v1, php-cs-fixer, phpstan, phpunit:8.5.8
+          tools: composer:v1, php-cs-fixer, phpstan
 
       - name: Get composer cache directory
         id: composercache
@@ -41,7 +41,7 @@ jobs:
         env:
           SCRUTINIZER_API_ACCESS_TOKEN: ${{ secrets.SCRUTINIZER_API_ACCESS_TOKEN }}
         run: |
-          phpunit --coverage-clover=coverage.clover
+          ./vendor/bin/phpunit --coverage-clover=coverage.clover
           wget https://scrutinizer-ci.com/ocular.phar
           php ocular.phar code-coverage:upload --access-token="$SCRUTINIZER_API_ACCESS_TOKEN" --format=php-clover coverage.clover
 
