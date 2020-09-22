@@ -40,10 +40,10 @@ jobs:
       - name: Test PHPUnit
         env:
           SCRUTINIZER_API_ACCESS_TOKEN: ${{ secrets.SCRUTINIZER_API_ACCESS_TOKEN }}
-        run:
-          - phpunit --coverage-clover=coverage.clover
-          - wget https://scrutinizer-ci.com/ocular.phar
-          - php ocular.phar code-coverage:upload --access-token="$SCRUTINIZER_API_ACCESS_TOKEN" --format=php-clover coverage.clover
+        run: |
+          phpunit --coverage-clover=coverage.clover
+          wget https://scrutinizer-ci.com/ocular.phar
+          php ocular.phar code-coverage:upload --access-token="$SCRUTINIZER_API_ACCESS_TOKEN" --format=php-clover coverage.clover
 
       - name: Test PHP-CS-Fixer
         run: php-cs-fixer fix --dry-run --diff --no-ansi
