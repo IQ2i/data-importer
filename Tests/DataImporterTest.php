@@ -24,20 +24,21 @@ class DataImporterTest extends TestCase
 
     public function setUp(): void
     {
-        $fs = vfsStream::setup();
+        $this->fs = vfsStream::setup();
 
         // classic folder
-        $fs->addChild(vfsStream::newDirectory('tmp1', 0755));
-        $fs->getChild('tmp1')->addChild(vfsStream::newFile('books.csv')->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
+        $tmp1 = vfsStream::newDirectory('tmp1', 0755);
+        $tmp1->addChild(vfsStream::newFile('books.csv')->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
+        $this->fs->addChild($tmp1);
 
         // empty folder
-        $fs->addChild(vfsStream::newDirectory('tmp2', 0755));
+        $tmp2 = vfsStream::newDirectory('tmp2', 0755);
+        $this->fs->addChild($tmp2);
 
         // folder with unreadable file
-        $fs->addChild(vfsStream::newDirectory('tmp3', 0755));
-        $fs->getChild('tmp3')->addChild(vfsStream::newFile('books.csv', 0111)->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
-
-        $this->fs = $fs;
+        $tmp3 = vfsStream::newDirectory('tmp3', 0755);
+        $tmp3->addChild(vfsStream::newFile('books.csv', 0111)->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
+        $this->fs->addChild($tmp3);
     }
 
     private static function setupDataImporter(): DataImporter
