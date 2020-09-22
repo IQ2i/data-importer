@@ -46,7 +46,7 @@ interface ReaderInterface extends \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
-    public function current();
+    public function current(): array;
 
     /**
      * {@inheritdoc}
