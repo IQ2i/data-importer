@@ -16,7 +16,6 @@ use IQ2i\DataImporter\Exchange\MessageFactory;
 use IQ2i\DataImporter\Processor\ProcessorInterface;
 use IQ2i\DataImporter\Reader\ReaderInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -84,8 +83,6 @@ class DataImporter
                 ->sortByModifiedTime();
         } catch (DirectoryNotFoundException $exception) {
             throw new \InvalidArgumentException('The path "'.$path.'" is not a valid folder path.');
-        } catch (AccessDeniedException $exception) {
-            throw new \InvalidArgumentException('The directory located in "'.$path.'" is not readable.');
         }
 
         return $finder;
