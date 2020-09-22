@@ -116,7 +116,7 @@ class DataImporter
 
     private function doArchive(\SplFileInfo $file): void
     {
-        if (null !== $this->archiver) {
+        if (null === $this->archiver) {
             return;
         }
 
