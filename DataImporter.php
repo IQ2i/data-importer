@@ -68,9 +68,7 @@ class DataImporter
             }
 
             // archive file
-            if (null !== $this->archiver) {
-                $this->doArchive($file);
-            }
+            $this->doArchive($file);
         }
     }
 
@@ -118,6 +116,10 @@ class DataImporter
 
     private function doArchive(\SplFileInfo $file): void
     {
+        if (null !== $this->archiver) {
+            return;
+        }
+
         try {
             $this->archiver->archive($file);
         } catch (IOException $exception) {
