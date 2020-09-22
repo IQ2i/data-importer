@@ -62,10 +62,8 @@ class DataImporter
             // update reader
             $this->reader->setFile($file->openFile());
 
-            foreach ($this->reader as $data) {
-                // process
-                $this->processIteration($file, $data);
-            }
+            // process file
+            $this->processFile($file);
 
             // archive file
             $this->doArchive($file);
@@ -93,22 +91,24 @@ class DataImporter
         return $finder;
     }
 
-    private function processIteration(\SplFileInfo $file, $data): void
+    private function processFile(\SplFileInfo $file): void
     {
         try {
-            if ($this->reader->isDenormalizable() && null !== $this->reader->getDto()) {
-                // init serializer
-                $serializer = new Serializer([new ObjectNormalizer()]);
+            foreach ($this->reader as $data) {
+                if ($this->reader->isDenormalizable() && null !== $this->reader->getDto()) {
+                    // init serializer
+                    $serializer = new Serializer([new ObjectNormalizer()]);
 
-                // denormalize array data into DTO object
-                $data = $serializer->denormalize($data, $this->reader->getDto());
+                    // denormalize array data into DTO object
+                    $data = $serializer->denormalize($data, $this->reader->getDto());
+                }
+
+                // create message
+                $message = MessageFactory::create($file, $this->reader, $data);
+
+                // process message
+                $this->processor->process($message);
             }
-
-            // create message
-            $message = MessageFactory::create($file, $this->reader, $data);
-
-            // process message
-            $this->processor->process($message);
         } catch (NotNormalizableValueException $exception) {
             throw new \InvalidArgumentException('An error occurred while denormalizing data: '.$exception->getMessage());
         }
