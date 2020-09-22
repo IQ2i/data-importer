@@ -107,14 +107,16 @@ class CsvReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function current()
+    public function current(): array
     {
         if (!$this->valid()) {
             return [];
         }
 
         if (!empty($this->defaultContext[self::HEADERS_KEY])) {
-            return array_combine($this->defaultContext[self::HEADERS_KEY], $this->file->current());
+            $current = array_combine($this->defaultContext[self::HEADERS_KEY], $this->file->current());
+
+            return false !== $current ? $current : [];
         }
 
         return $this->file->current();

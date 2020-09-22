@@ -89,7 +89,7 @@ class XmlReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function current()
+    public function current(): array
     {
         if (!$this->valid()) {
             return [];

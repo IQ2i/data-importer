@@ -1,5 +1,12 @@
 name: "Continuous Integration"
-on: [push, pull_request]
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   tests:
@@ -21,7 +28,7 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           php-version: "${{ matrix.php-version }}"
-          tools: composer:v1, php-cs-fixer, phpstan, phpunit:8.5.8
+          tools: composer:v1, php-cs-fixer, phpstan
 
       - name: Get composer cache directory
         id: composercache
@@ -38,7 +45,7 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Test PHPUnit
-        run: phpunit
+        run: ./vendor/bin/phpunit
 
       - name: Test PHP-CS-Fixer
         run: php-cs-fixer fix --dry-run --diff --no-ansi
