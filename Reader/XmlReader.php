@@ -8,47 +8,51 @@ class XmlReader implements ReaderInterface
 {
     use SerializerTrait;
 
-    const FILE_REGEX_KEY = 'xml_file_regex';
-    const XPATH_KEY = 'xml_xpath';
+    const CONTEXT_XPATH = 'xml_xpath';
 
     private $file;
     private $index = 1;
     private $defaultContext = [
-        self::FILE_REGEX_KEY  => '/.xml/',
-        self::XPATH_KEY       => null,
+        self::CONTEXT_XPATH       => null,
     ];
 
-    public function __construct(array $defaultContext = [])
+    public function __construct(string $filePath, array $defaultContext = [])
     {
-        $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
-    }
+        // create a new SplInfo from path
+        $fileInfo = new \SplFileInfo($filePath);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setFile(\SplFileObject $file): void
-    {
-        if (null === $this->defaultContext[self::XPATH_KEY]) {
-            $this->file = new \SimpleXMLIterator($file->getPathname(), null, true);
+        // check if file is readable
+        if (!$fileInfo->isReadable()) {
+            throw new \InvalidArgumentException('The file '.$fileInfo->getFilename().' is not readable.');
+        }
+
+        // create SplObject from SplInfo
+        $this->file = $fileInfo->openFile();
+
+        // update default context
+        $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
+
+        if (null === $this->defaultContext[self::CONTEXT_XPATH]) {
+            $this->file = new \SimpleXMLIterator($this->file->getPathname(), null, true);
         } else {
             // init SimpleXMLElement from path
-            $element = new \SimpleXMLElement($file->getPathname(), null, true);
+            $element = new \SimpleXMLElement($this->file->getPathname(), null, true);
 
             // explode string into array
-            $nodes = explode('/', $this->defaultContext[self::XPATH_KEY]);
+            $nodes = explode('/', $this->defaultContext[self::CONTEXT_XPATH]);
 
             // get first node (current element node)
             $rootNode = array_shift($nodes);
 
             if ($rootNode !== $element->getName()) {
-                throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::XPATH_KEY].'" is incorrect.');
+                throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::CONTEXT_XPATH].'" is incorrect.');
             }
 
             // go to the asked node
             foreach ($nodes as $node) {
                 // check if child exist
                 if (!isset($element->{$node})) {
-                    throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::XPATH_KEY].'" is incorrect.');
+                    throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::CONTEXT_XPATH].'" is incorrect.');
                 }
 
                 // update current element
@@ -73,9 +77,9 @@ class XmlReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getDefaultFileRegex(): string
+    public function getFile(): \SplFileObject
     {
-        return $this->defaultContext[self::FILE_REGEX_KEY];
+        return $this->file;
     }
 
     /**
@@ -141,6 +145,8 @@ class XmlReader implements ReaderInterface
 
     /**
      * Transform SimpleXMLIterator into array.
+     *
+     * TODO: move this method to a helper or an util class
      */
     private static function transformToArray(\SimpleXMLIterator $iterator): array
     {

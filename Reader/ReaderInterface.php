@@ -14,11 +14,6 @@ namespace IQ2i\DataImporter\Reader;
 interface ReaderInterface extends \Iterator, \Countable
 {
     /**
-     * Set file.
-     */
-    public function setFile(\SplFileObject $file): void;
-
-    /**
      * Get DTO.
      */
     public function getDto(): ?string;
@@ -34,9 +29,9 @@ interface ReaderInterface extends \Iterator, \Countable
     public function isDenormalizable(): bool;
 
     /**
-     * Get default regex that files must match.
+     * Get file.
      */
-    public function getDefaultFileRegex(): string;
+    public function getFile(): \SplFileObject;
 
     /**
      * Get current index.

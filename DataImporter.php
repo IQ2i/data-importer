@@ -36,89 +36,55 @@ class DataImporter
         $this->archiver = $archiver;
     }
 
-    public function execute(string $path, ?string $regex = null)
+    public function execute()
     {
-        // check if regex is valid
-        if (null !== $regex && false === @preg_match($regex, '')) {
-            throw new \InvalidArgumentException('The regex "'.$regex.'" is invalid.');
+        // TODO: call `$this->processor->begin()`
+
+        // process file
+        foreach ($this->reader as $data) {
+            // serialize data if needed
+            $this->serializeData($data);
+
+            // create message
+            $message = MessageFactory::create($this->reader, $data);
+
+            // process message
+            $this->processor->process($message);
+
+            // TODO: in case of BatchProcessor, call `$this->processor->batch()`
         }
 
-        // init finder
-        $finder = $this->initFinder($path, $regex);
+        // TODO: call `$this->processor->end()`
 
-        // cut process if no result
-        if (!$finder->hasResults()) {
-            return false;
-        }
-
-        /** @var SplFileInfo $file */
-        foreach ($finder as $file) {
-            // check if file is readable
-            if (!$file->isReadable()) {
-                throw new \InvalidArgumentException('The file '.$file->getFilename().' is not readable.');
-            }
-
-            // update reader
-            $this->reader->setFile($file->openFile());
-
-            // process file
-            $this->processFile($file);
-
-            // archive file
-            $this->doArchive($file);
-        }
+        // archive file
+        $this->doArchive();
     }
 
-    private function initFinder(string $path, ?string $regex): Finder
+    private function serializeData(array &$data): void
     {
-        // init finder
-        $finder = new Finder();
-
-        try {
-            // search files
-            $finder
-                ->in($path)
-                ->name($regex ?? $this->reader->getDefaultFileRegex())
-                ->depth('== 0')
-                ->sortByModifiedTime();
-        } catch (DirectoryNotFoundException $exception) {
-            throw new \InvalidArgumentException('The path "'.$path.'" is not a valid folder path.');
+        if (false === $this->reader->isDenormalizable() || null === $this->reader->getDto()) {
+            return;
         }
 
-        return $finder;
-    }
+        // init serializer
+        $serializer = new Serializer([new ObjectNormalizer()]);
 
-    private function processFile(\SplFileInfo $file): void
-    {
         try {
-            foreach ($this->reader as $data) {
-                if ($this->reader->isDenormalizable() && null !== $this->reader->getDto()) {
-                    // init serializer
-                    $serializer = new Serializer([new ObjectNormalizer()]);
-
-                    // denormalize array data into DTO object
-                    $data = $serializer->denormalize($data, $this->reader->getDto());
-                }
-
-                // create message
-                $message = MessageFactory::create($file, $this->reader, $data);
-
-                // process message
-                $this->processor->process($message);
-            }
+            // denormalize array data into DTO object
+            $data = $serializer->denormalize($data, $this->reader->getDto());
         } catch (NotNormalizableValueException $exception) {
             throw new \InvalidArgumentException('An error occurred while denormalizing data: '.$exception->getMessage());
         }
     }
 
-    private function doArchive(\SplFileInfo $file): void
+    private function doArchive(): void
     {
         if (null === $this->archiver) {
             return;
         }
 
         try {
-            $this->archiver->archive($file);
+            $this->archiver->archive($this->reader->getFile());
         } catch (IOException $exception) {
             throw new IOException('An error occurred while archiving file: '.$exception->getMessage());
         }

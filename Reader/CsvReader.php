@@ -17,41 +17,43 @@ class CsvReader implements ReaderInterface
 {
     use SerializerTrait;
 
-    const FILE_REGEX_KEY = 'csv_file_regex';
-    const DELIMITER_KEY = 'csv_delimiter';
-    const ENCLOSURE_KEY = 'csv_enclosure';
-    const ESCAPE_CHAR_KEY = 'csv_escape_char';
-    const HEADERS_KEY = 'csv_headers';
-    const NO_HEADERS_KEY = 'no_headers';
+    const CONTEXT_DELIMITER = 'csv_delimiter';
+    const CONTEXT_ENCLOSURE = 'csv_enclosure';
+    const CONTEXT_ESCAPE_CHAR = 'csv_escape_char';
+    const CONTEXT_HEADERS = 'csv_headers';
+    const CONTEXT_NO_HEADERS = 'no_headers';
 
     private $file;
     private $count = 0;
     private $index = 1;
     private $defaultContext = [
-        self::FILE_REGEX_KEY  => '/.csv/',
-        self::DELIMITER_KEY   => ',',
-        self::ENCLOSURE_KEY   => '"',
-        self::ESCAPE_CHAR_KEY => '',
-        self::HEADERS_KEY     => [],
-        self::NO_HEADERS_KEY  => false,
+        self::CONTEXT_DELIMITER   => ',',
+        self::CONTEXT_ENCLOSURE   => '"',
+        self::CONTEXT_ESCAPE_CHAR => '',
+        self::CONTEXT_HEADERS     => [],
+        self::CONTEXT_NO_HEADERS  => false,
     ];
 
-    public function __construct(array $defaultContext = [])
+    public function __construct(string $filePath, array $defaultContext = [])
     {
-        $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
+        // create a new SplInfo from path
+        $fileInfo = new \SplFileInfo($filePath);
 
-        if (\PHP_VERSION_ID < 70400 && '' === $this->defaultContext[self::ESCAPE_CHAR_KEY]) {
-            $this->defaultContext[self::ESCAPE_CHAR_KEY] = '\\';
+        // check if file is readable
+        if (!$fileInfo->isReadable()) {
+            throw new \InvalidArgumentException('The file '.$fileInfo->getFilename().' is not readable.');
         }
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setFile(\SplFileObject $file): void
-    {
+        // create SplObject from SplInfo
+        $this->file = $fileInfo->openFile();
+
+        // update default context
+        $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
+        if (\PHP_VERSION_ID < 70400 && '' === $this->defaultContext[self::CONTEXT_ESCAPE_CHAR]) {
+            $this->defaultContext[self::CONTEXT_ESCAPE_CHAR] = '\\';
+        }
+
         // update file attributes
-        $this->file = $file;
         $this->file->setFlags(
             \SplFileObject::READ_CSV |
             \SplFileObject::SKIP_EMPTY |
@@ -59,16 +61,15 @@ class CsvReader implements ReaderInterface
             \SplFileObject::DROP_NEW_LINE
         );
         $this->file->setCsvControl(
-            $this->defaultContext[self::DELIMITER_KEY],
-            $this->defaultContext[self::ENCLOSURE_KEY],
-            $this->defaultContext[self::ESCAPE_CHAR_KEY]
+            $this->defaultContext[self::CONTEXT_DELIMITER],
+            $this->defaultContext[self::CONTEXT_ENCLOSURE],
+            $this->defaultContext[self::CONTEXT_ESCAPE_CHAR]
         );
 
         // init headers
-        $this->defaultContext[self::HEADERS_KEY] = [];
-        if (!$this->defaultContext[self::NO_HEADERS_KEY]) {
+        if (!$this->defaultContext[self::CONTEXT_NO_HEADERS]) {
             $this->rewind();
-            $this->defaultContext[self::HEADERS_KEY] = $this->file->current();
+            $this->defaultContext[self::CONTEXT_HEADERS] = $this->file->current();
         }
 
         // update counter
@@ -85,15 +86,15 @@ class CsvReader implements ReaderInterface
      */
     public function isDenormalizable(): bool
     {
-        return !empty($this->defaultContext[self::HEADERS_KEY]);
+        return !empty($this->defaultContext[self::CONTEXT_HEADERS]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getDefaultFileRegex(): string
+    public function getFile(): \SplFileObject
     {
-        return $this->defaultContext[self::FILE_REGEX_KEY];
+        return $this->file;
     }
 
     /**
@@ -113,8 +114,8 @@ class CsvReader implements ReaderInterface
             return [];
         }
 
-        if (!empty($this->defaultContext[self::HEADERS_KEY])) {
-            $current = array_combine($this->defaultContext[self::HEADERS_KEY], $this->file->current());
+        if (!empty($this->defaultContext[self::CONTEXT_HEADERS])) {
+            $current = array_combine($this->defaultContext[self::CONTEXT_HEADERS], $this->file->current());
 
             return false !== $current ? $current : [];
         }
@@ -155,7 +156,7 @@ class CsvReader implements ReaderInterface
         $this->file->rewind();
 
         // skip headers
-        if (!empty($this->defaultContext[self::HEADERS_KEY])) {
+        if (!empty($this->defaultContext[self::CONTEXT_HEADERS])) {
             $this->next();
         }
 

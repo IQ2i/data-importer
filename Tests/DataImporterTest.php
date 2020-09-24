@@ -25,25 +25,16 @@ class DataImporterTest extends TestCase
     public function setUp(): void
     {
         $this->fs = vfsStream::setup();
-
-        // classic folder
-        $tmp1 = vfsStream::newDirectory('tmp1', 0755);
-        $tmp1->addChild(vfsStream::newFile('books.csv')->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
-        $this->fs->addChild($tmp1);
-
-        // empty folder
-        $tmp2 = vfsStream::newDirectory('tmp2', 0755);
-        $this->fs->addChild($tmp2);
-
-        // folder with unreadable file
-        $tmp3 = vfsStream::newDirectory('tmp3', 0755);
-        $tmp3->addChild(vfsStream::newFile('books.csv', 0111)->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
-        $this->fs->addChild($tmp3);
+        $this->fs->addChild(vfsStream::newFile('books.csv', 0755)->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
+        $this->fs->addChild(vfsStream::newFile('books_unreadable.csv', 0111)->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
     }
 
-    private static function setupDataImporter(): DataImporter
+    private static function setupDataImporter(string $filePath): DataImporter
     {
-        $csvReader = new CsvReader([CsvReader::DELIMITER_KEY => ';']);
+        $csvReader = new CsvReader(
+            $filePath,
+            [CsvReader::CONTEXT_DELIMITER => ';']
+        );
         $csvReader->setDto(Book::class);
 
         return new DataImporter(
@@ -52,52 +43,42 @@ class DataImporterTest extends TestCase
         );
     }
 
-    public function testExecute()
+    public function testExecuteWithoutDto()
     {
-        // get new data importer
-        $dataImporter = self::setupDataImporter();
+        // set up data importer
+        $csvReader = new CsvReader(
+            $this->fs->getChild('books.csv')->url(),
+            [CsvReader::CONTEXT_DELIMITER => ';']
+        );
+        $dataImporter = new DataImporter($csvReader, new TestProcessor());
 
-        $this->assertNotFalse($dataImporter->execute($this->fs->getChild('tmp1')->url()));
+        $this->assertNotFalse($dataImporter->execute());
     }
 
-    public function testInvalidRegexError()
+    public function testExecuteWithDto()
+    {
+        // set up data importer
+        $csvReader = new CsvReader(
+            $this->fs->getChild('books.csv')->url(),
+            [CsvReader::CONTEXT_DELIMITER => ';']
+        );
+        $csvReader->setDto(Book::class);
+        $dataImporter = new DataImporter($csvReader, new TestProcessor());
+
+        $this->assertNotFalse($dataImporter->execute());
+    }
+
+    public function testExecuteWithUnreadableFile()
     {
         // test exception
         $this->expectException(\InvalidArgumentException::class);
+        // set up data importer
+        $csvReader = new CsvReader(
+            $this->fs->getChild('books_unreadable.csv')->url(),
+            [CsvReader::CONTEXT_DELIMITER => ';']
+        );
+        $dataImporter = new DataImporter($csvReader, new TestProcessor());
 
-        // get new data importer
-        $dataImporter = self::setupDataImporter();
-
-        $dataImporter->execute($this->fs->getChild('tmp1')->url(), '..\test');
-    }
-
-    public function testUnknownFolder()
-    {
-        // test exception
-        $this->expectException(\InvalidArgumentException::class);
-
-        // get new data importer
-        $dataImporter = self::setupDataImporter();
-
-        $dataImporter->execute($this->fs->getChild('tmp1')->url().'test');
-    }
-
-    public function testEmptyFolder()
-    {
-        // get new data importer
-        $dataImporter = self::setupDataImporter();
-
-        $this->assertFalse($dataImporter->execute($this->fs->getChild('tmp2')->url()));
-    }
-
-    public function testWithUnreadableFiles()
-    {
-        // test exception
-        $this->expectException(\InvalidArgumentException::class);
-
-        // get new data importer
-        $dataImporter = self::setupDataImporter();
-
-        $dataImporter->execute($this->fs->getChild('tmp3')->url());
+        $dataImporter->execute();
     }
 }

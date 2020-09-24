@@ -20,19 +20,15 @@ class MessageTest extends TestCase
 {
     public function testMessage()
     {
-        // init file
-        $file = new \SplFileInfo(__DIR__.'/../fixtures/csv/books_with_headers.csv');
-
         // init reader
-        $reader = new CsvReader();
-        $reader->setFile($file->openFile());
+        $reader = new CsvReader(__DIR__.'/../fixtures/csv/books_with_headers.csv');
 
         // create message
-        $message = MessageFactory::create($file, $reader, $reader->current());
+        $message = MessageFactory::create($reader, $reader->current());
 
         // test getter
-        $this->assertEquals($file->getFilename(), $message->getFileName());
-        $this->assertEquals($file->getPathname(), $message->getFilePath());
+        $this->assertEquals($reader->getFile()->getFilename(), $message->getFileName());
+        $this->assertEquals($reader->getFile()->getPathname(), $message->getFilePath());
         $this->assertEquals($reader->index(), $message->getCurrentIteration());
         $this->assertEquals($reader->count(), $message->getTotalIteration());
         $this->assertEquals($reader->current(), $message->getData());

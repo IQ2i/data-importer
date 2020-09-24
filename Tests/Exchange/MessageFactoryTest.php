@@ -20,20 +20,16 @@ class MessageFactoryTest extends TestCase
 {
     public function testMessageCreation()
     {
-        // init file
-        $file = new \SplFileInfo(__DIR__.'/../fixtures/csv/books_with_headers.csv');
-
         // init reader
-        $reader = new CsvReader();
-        $reader->setFile($file->openFile());
+        $reader = new CsvReader(__DIR__.'/../fixtures/csv/books_with_headers.csv');
 
         // create message from factory
-        $factoryMessage = MessageFactory::create($file, $reader, $reader->current());
+        $factoryMessage = MessageFactory::create($reader, $reader->current());
 
         // create message manually
         $manuallyMessage = new Message(
-            $file->getFilename(),
-            $file->getPathname(),
+            $reader->getFile()->getFilename(),
+            $reader->getFile()->getPathname(),
             $reader->index(),
             $reader->count(),
             $reader->current()

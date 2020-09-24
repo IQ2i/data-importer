@@ -19,13 +19,10 @@ class XmlReaderTest extends TestCase
     public function testReadXmlWithXpath()
     {
         // init reader
-        $reader = new XmlReader([
-            XmlReader::XPATH_KEY => 'shop/catalog',
-        ]);
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_with_xpath.xml'));
-
-        // test default configuration
-        $this->assertEquals('/.xml/', $reader->getDefaultFileRegex());
+        $reader = new XmlReader(
+            __DIR__.'/../fixtures/xml/books_with_xpath.xml',
+            [XmlReader::CONTEXT_XPATH => 'shop/catalog']
+        );
 
         // test denormalization
         $this->assertTrue($reader->isDenormalizable());
@@ -78,11 +75,7 @@ class XmlReaderTest extends TestCase
     public function testReadXmlWithoutXpath()
     {
         // init reader
-        $reader = new XmlReader();
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_without_xpath.xml'));
-
-        // test default configuration
-        $this->assertEquals('/.xml/', $reader->getDefaultFileRegex());
+        $reader = new XmlReader(__DIR__.'/../fixtures/xml/books_without_xpath.xml');
 
         // test denormalization
         $this->assertTrue($reader->isDenormalizable());
@@ -138,10 +131,10 @@ class XmlReaderTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         // init reader
-        $reader = new XmlReader([
-            XmlReader::XPATH_KEY => 'foo',
-        ]);
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_with_xpath.xml'));
+        new XmlReader(
+            __DIR__.'/../fixtures/xml/books_with_xpath.xml',
+            [XmlReader::CONTEXT_XPATH => 'foo']
+        );
     }
 
     public function testReadXmlWithIncorrectXpath()
@@ -150,9 +143,9 @@ class XmlReaderTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         // init reader
-        $reader = new XmlReader([
-            XmlReader::XPATH_KEY => 'shop/foo',
-        ]);
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_with_xpath.xml'));
+        new XmlReader(
+            __DIR__.'/../fixtures/xml/books_with_xpath.xml',
+            [XmlReader::CONTEXT_XPATH => 'shop/foo']
+        );
     }
 }
