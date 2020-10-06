@@ -4,10 +4,9 @@ namespace IQ2i\DataImporter\Reader;
 
 class XmlReader implements ReaderInterface
 {
-    use SerializableReaderTrait;
-
     const CONTEXT_XPATH = 'xml_xpath';
 
+    private $dto;
     private $file;
     private $iterator;
     private $index = 1;
@@ -15,7 +14,7 @@ class XmlReader implements ReaderInterface
         self::CONTEXT_XPATH => null,
     ];
 
-    public function __construct(string $filePath, array $defaultContext = [])
+    public function __construct(string $filePath, ?string $dto = null, array $defaultContext = [])
     {
         // create a new SplInfo from path
         $this->file = new \SplFileInfo($filePath);
@@ -58,6 +57,9 @@ class XmlReader implements ReaderInterface
             $this->iterator = new \SimpleXMLIterator($element->asXML());
         }
 
+        // set dto
+        $this->dto = $dto;
+
         // must rewind before use
         $this->rewind();
     }
@@ -65,9 +67,17 @@ class XmlReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getDto(): ?string
+    {
+        return $this->dto;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isDenormalizable(): bool
     {
-        return true;
+        return null !== $this->dto;
     }
 
     /**

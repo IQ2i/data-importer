@@ -21,11 +21,12 @@ class CsvReaderTest extends TestCase
         // init reader
         $reader = new CsvReader(
             __DIR__.'/../fixtures/csv/books_with_headers.csv',
+            null,
             [CsvReader::CONTEXT_DELIMITER => ';']
         );
 
         // test denormalization
-        $this->assertTrue($reader->isDenormalizable());
+        $this->assertFalse($reader->isDenormalizable());
 
         // test file
         $this->assertEquals(
@@ -80,6 +81,7 @@ class CsvReaderTest extends TestCase
         // init reader
         $reader = new CsvReader(
             __DIR__.'/../fixtures/csv/books_without_headers.csv',
+            null,
             [
                 CsvReader::CONTEXT_DELIMITER  => ';',
                 CsvReader::CONTEXT_NO_HEADERS => true,

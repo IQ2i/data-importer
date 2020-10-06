@@ -72,7 +72,7 @@ class DataImporter
 
     private function serializeData(array &$data): void
     {
-        if (false === $this->reader->isDenormalizable() || null === $this->reader->getDto()) {
+        if (false === $this->reader->isDenormalizable()) {
             return;
         }
 

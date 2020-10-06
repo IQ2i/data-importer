@@ -19,11 +19,6 @@ interface ReaderInterface extends \Iterator, \Countable
     public function getDto(): ?string;
 
     /**
-     * Set DTO.
-     */
-    public function setDto(string $dto): void;
-
-    /**
      * Check if file can be denormalized.
      */
     public function isDenormalizable(): bool;

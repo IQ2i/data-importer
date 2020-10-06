@@ -13,14 +13,13 @@ namespace IQ2i\DataImporter\Reader;
 
 class CsvReader implements ReaderInterface
 {
-    use SerializableReaderTrait;
-
     const CONTEXT_DELIMITER = 'csv_delimiter';
     const CONTEXT_ENCLOSURE = 'csv_enclosure';
     const CONTEXT_ESCAPE_CHAR = 'csv_escape_char';
     const CONTEXT_HEADERS = 'csv_headers';
     const CONTEXT_NO_HEADERS = 'no_headers';
 
+    private $dto;
     private $file;
     private $iterator;
     private $count = 0;
@@ -33,7 +32,7 @@ class CsvReader implements ReaderInterface
         self::CONTEXT_NO_HEADERS  => false,
     ];
 
-    public function __construct(string $filePath, array $defaultContext = [])
+    public function __construct(string $filePath, ?string $dto = null, array $defaultContext = [])
     {
         // create a new SplInfo from path
         $this->file = new \SplFileInfo($filePath);
@@ -71,6 +70,9 @@ class CsvReader implements ReaderInterface
             $this->defaultContext[self::CONTEXT_HEADERS] = $this->iterator->current();
         }
 
+        // set dto
+        $this->dto = $dto;
+
         // update counter
         $this->rewind();
         while ($this->valid()) {
@@ -83,9 +85,17 @@ class CsvReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getDto(): ?string
+    {
+        return $this->dto;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isDenormalizable(): bool
     {
-        return !empty($this->defaultContext[self::CONTEXT_HEADERS]);
+        return null !== $this->dto && !empty($this->defaultContext[self::CONTEXT_HEADERS]);
     }
 
     /**
