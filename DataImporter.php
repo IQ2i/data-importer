@@ -51,7 +51,13 @@ class DataImporter
             $this->processor->item($message);
 
             // call batch action
-            if ($this->processor instanceof BatchProcessorInterface && 0 === $message->getCurrentIteration() % $message->getTotalIteration()) {
+            if (
+                $this->processor instanceof BatchProcessorInterface
+                && (
+                    0 === $message->getCurrentIteration() % $message->getTotalIteration()
+                    || $message->getCurrentIteration() === $message->getTotalIteration()
+                )
+            ) {
                 // callback at the end of batch
                 $this->processor->batch();
             }
