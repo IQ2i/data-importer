@@ -13,12 +13,11 @@ namespace IQ2i\DataImporter;
 
 use IQ2i\DataImporter\Archiver\ArchiverInterface;
 use IQ2i\DataImporter\Exchange\MessageFactory;
+use IQ2i\DataImporter\Processor\BatchProcessor;
+use IQ2i\DataImporter\Processor\BatchProcessorInterface;
 use IQ2i\DataImporter\Processor\ProcessorInterface;
 use IQ2i\DataImporter\Reader\ReaderInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -38,7 +37,8 @@ class DataImporter
 
     public function execute()
     {
-        // TODO: call `$this->processor->begin()`
+        // callback before file processing
+        $this->processor->begin();
 
         // process file
         foreach ($this->reader as $data) {
@@ -49,12 +49,17 @@ class DataImporter
             $message = MessageFactory::create($this->reader, $data);
 
             // process message
-            $this->processor->process($message);
+            $this->processor->item($message);
 
-            // TODO: in case of BatchProcessor, call `$this->processor->batch()`
+            // call batch action
+            if ($this->processor instanceof BatchProcessorInterface && 0 === $message->getCurrentIteration() % $message->getTotalIteration()) {
+                // callback at the end of batch
+                $this->processor->batch();
+            }
         }
 
-        // TODO: call `$this->processor->end()`
+        // callback before file processing
+        $this->processor->end();
 
         // archive file
         $this->doArchive();
