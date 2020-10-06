@@ -24,6 +24,7 @@ class CsvReader implements ReaderInterface
     const CONTEXT_NO_HEADERS = 'no_headers';
 
     private $file;
+    private $iterator;
     private $count = 0;
     private $index = 1;
     private $defaultContext = [
@@ -37,15 +38,15 @@ class CsvReader implements ReaderInterface
     public function __construct(string $filePath, array $defaultContext = [])
     {
         // create a new SplInfo from path
-        $fileInfo = new \SplFileInfo($filePath);
+        $this->file = new \SplFileInfo($filePath);
 
         // check if file is readable
-        if (!$fileInfo->isReadable()) {
-            throw new \InvalidArgumentException('The file '.$fileInfo->getFilename().' is not readable.');
+        if (!$this->file->isReadable()) {
+            throw new \InvalidArgumentException('The file '.$this->file->getFilename().' is not readable.');
         }
 
         // create SplObject from SplInfo
-        $this->file = $fileInfo->openFile();
+        $this->iterator = $this->file->openFile();
 
         // update default context
         $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
@@ -54,13 +55,13 @@ class CsvReader implements ReaderInterface
         }
 
         // update file attributes
-        $this->file->setFlags(
+        $this->iterator->setFlags(
             \SplFileObject::READ_CSV |
             \SplFileObject::SKIP_EMPTY |
             \SplFileObject::READ_AHEAD |
             \SplFileObject::DROP_NEW_LINE
         );
-        $this->file->setCsvControl(
+        $this->iterator->setCsvControl(
             $this->defaultContext[self::CONTEXT_DELIMITER],
             $this->defaultContext[self::CONTEXT_ENCLOSURE],
             $this->defaultContext[self::CONTEXT_ESCAPE_CHAR]
@@ -69,7 +70,7 @@ class CsvReader implements ReaderInterface
         // init headers
         if (!$this->defaultContext[self::CONTEXT_NO_HEADERS]) {
             $this->rewind();
-            $this->defaultContext[self::CONTEXT_HEADERS] = $this->file->current();
+            $this->defaultContext[self::CONTEXT_HEADERS] = $this->iterator->current();
         }
 
         // update counter
@@ -92,7 +93,7 @@ class CsvReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getFile(): \SplFileObject
+    public function getFile(): \SplFileInfo
     {
         return $this->file;
     }
@@ -115,12 +116,12 @@ class CsvReader implements ReaderInterface
         }
 
         if (!empty($this->defaultContext[self::CONTEXT_HEADERS])) {
-            $current = array_combine($this->defaultContext[self::CONTEXT_HEADERS], $this->file->current());
+            $current = array_combine($this->defaultContext[self::CONTEXT_HEADERS], $this->iterator->current());
 
             return false !== $current ? $current : [];
         }
 
-        return $this->file->current();
+        return $this->iterator->current();
     }
 
     /**
@@ -128,7 +129,7 @@ class CsvReader implements ReaderInterface
      */
     public function next()
     {
-        $this->file->next();
+        $this->iterator->next();
         ++$this->index;
     }
 
@@ -137,7 +138,7 @@ class CsvReader implements ReaderInterface
      */
     public function key()
     {
-        return $this->file->key();
+        return $this->iterator->key();
     }
 
     /**
@@ -145,7 +146,7 @@ class CsvReader implements ReaderInterface
      */
     public function valid()
     {
-        return $this->file->valid();
+        return $this->iterator->valid();
     }
 
     /**
@@ -153,7 +154,7 @@ class CsvReader implements ReaderInterface
      */
     public function rewind()
     {
-        $this->file->rewind();
+        $this->iterator->rewind();
 
         // skip headers
         if (!empty($this->defaultContext[self::CONTEXT_HEADERS])) {

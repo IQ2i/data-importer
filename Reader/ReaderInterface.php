@@ -31,7 +31,7 @@ interface ReaderInterface extends \Iterator, \Countable
     /**
      * Get file.
      */
-    public function getFile(): \SplFileObject;
+    public function getFile(): \SplFileInfo;
 
     /**
      * Get current index.

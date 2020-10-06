@@ -11,29 +11,27 @@ class XmlReader implements ReaderInterface
     const CONTEXT_XPATH = 'xml_xpath';
 
     private $file;
+    private $iterator;
     private $index = 1;
     private $defaultContext = [
-        self::CONTEXT_XPATH       => null,
+        self::CONTEXT_XPATH => null,
     ];
 
     public function __construct(string $filePath, array $defaultContext = [])
     {
         // create a new SplInfo from path
-        $fileInfo = new \SplFileInfo($filePath);
+        $this->file = new \SplFileInfo($filePath);
 
         // check if file is readable
-        if (!$fileInfo->isReadable()) {
-            throw new \InvalidArgumentException('The file '.$fileInfo->getFilename().' is not readable.');
+        if (!$this->file->isReadable()) {
+            throw new \InvalidArgumentException('The file '.$this->file->getFilename().' is not readable.');
         }
-
-        // create SplObject from SplInfo
-        $this->file = $fileInfo->openFile();
 
         // update default context
         $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
 
         if (null === $this->defaultContext[self::CONTEXT_XPATH]) {
-            $this->file = new \SimpleXMLIterator($this->file->getPathname(), null, true);
+            $this->iterator = new \SimpleXMLIterator($this->file->getPathname(), null, true);
         } else {
             // init SimpleXMLElement from path
             $element = new \SimpleXMLElement($this->file->getPathname(), null, true);
@@ -59,7 +57,7 @@ class XmlReader implements ReaderInterface
                 $element = $element->{$node};
             }
 
-            $this->file = new \SimpleXMLIterator($element->asXML());
+            $this->iterator = new \SimpleXMLIterator($element->asXML());
         }
 
         // must rewind before use
@@ -77,7 +75,7 @@ class XmlReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getFile(): \SplFileObject
+    public function getFile(): \SplFileInfo
     {
         return $this->file;
     }
@@ -99,7 +97,7 @@ class XmlReader implements ReaderInterface
             return [];
         }
 
-        return self::transformToArray($this->file->current());
+        return self::transformToArray($this->iterator->current());
     }
 
     /**
@@ -107,7 +105,7 @@ class XmlReader implements ReaderInterface
      */
     public function next()
     {
-        $this->file->next();
+        $this->iterator->next();
         ++$this->index;
     }
 
@@ -116,7 +114,7 @@ class XmlReader implements ReaderInterface
      */
     public function key()
     {
-        return $this->file->key();
+        return $this->iterator->key();
     }
 
     /**
@@ -124,7 +122,7 @@ class XmlReader implements ReaderInterface
      */
     public function valid()
     {
-        return $this->file->valid();
+        return $this->iterator->valid();
     }
 
     /**
@@ -132,7 +130,7 @@ class XmlReader implements ReaderInterface
      */
     public function rewind()
     {
-        $this->file->rewind();
+        $this->iterator->rewind();
     }
 
     /**
@@ -140,7 +138,7 @@ class XmlReader implements ReaderInterface
      */
     public function count()
     {
-        return $this->file->count();
+        return $this->iterator->count();
     }
 
     /**

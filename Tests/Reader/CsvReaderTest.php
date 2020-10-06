@@ -29,7 +29,7 @@ class CsvReaderTest extends TestCase
 
         // test file
         $this->assertEquals(
-            new \SplFileObject(__DIR__.'/../fixtures/csv/books_with_headers.csv'),
+            new \SplFileInfo(__DIR__.'/../fixtures/csv/books_with_headers.csv'),
             $reader->getFile()
         );
 
@@ -81,7 +81,7 @@ class CsvReaderTest extends TestCase
         $reader = new CsvReader(
             __DIR__.'/../fixtures/csv/books_without_headers.csv',
             [
-                CsvReader::CONTEXT_DELIMITER => ';',
+                CsvReader::CONTEXT_DELIMITER  => ';',
                 CsvReader::CONTEXT_NO_HEADERS => true,
             ]
         );
@@ -91,7 +91,7 @@ class CsvReaderTest extends TestCase
 
         // test file
         $this->assertEquals(
-            new \SplFileObject(__DIR__.'/../fixtures/csv/books_without_headers.csv'),
+            new \SplFileInfo(__DIR__.'/../fixtures/csv/books_without_headers.csv'),
             $reader->getFile()
         );
 

@@ -16,6 +16,18 @@ use PHPUnit\Framework\TestCase;
 
 class XmlReaderTest extends TestCase
 {
+    public function testReadXmlWithUnreadableFile()
+    {
+        // test exception
+        $this->expectException(\InvalidArgumentException::class);
+
+        // init reader
+        $reader = new XmlReader(
+            __DIR__ . '/../fixtures/xml/books_with_wrong_path.xml',
+            [XmlReader::CONTEXT_XPATH => 'shop/catalog']
+        );
+    }
+
     public function testReadXmlWithXpath()
     {
         // init reader

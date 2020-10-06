@@ -11,12 +11,17 @@
 
 namespace IQ2i\DataImporter\Tests;
 
+use Cassandra\Date;
+use IQ2i\DataImporter\Archiver\DateTimeArchiver;
 use IQ2i\DataImporter\DataImporter;
 use IQ2i\DataImporter\Reader\CsvReader;
+use IQ2i\DataImporter\Reader\XmlReader;
 use IQ2i\DataImporter\Tests\Dto\Book;
-use IQ2i\DataImporter\Tests\Processor\TestProcessor;
+use IQ2i\DataImporter\Tests\Processor\TestBatchProcessor;
+use IQ2i\DataImporter\Tests\Processor\TestItemProcessor;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Exception\IOException;
 
 class DataImporterTest extends TestCase
 {
@@ -25,59 +30,97 @@ class DataImporterTest extends TestCase
     public function setUp(): void
     {
         $this->fs = vfsStream::setup();
+
         $this->fs->addChild(vfsStream::newFile('books.csv', 0755)->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
+        $this->fs->addChild(vfsStream::newFile('books.xml', 0755)->withContent(file_get_contents(__DIR__.'/fixtures/xml/books_with_xpath.xml')));
         $this->fs->addChild(vfsStream::newFile('books_unreadable.csv', 0111)->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
+
+        $this->fs->addChild(vfsStream::newDirectory('archive', 0755));
+        $this->fs->addChild(vfsStream::newDirectory('archive_unreadable', 0111));
     }
 
-    private static function setupDataImporter(string $filePath): DataImporter
-    {
-        $csvReader = new CsvReader(
-            $filePath,
-            [CsvReader::CONTEXT_DELIMITER => ';']
-        );
-        $csvReader->setDto(Book::class);
-
-        return new DataImporter(
-            $csvReader,
-            new TestProcessor()
-        );
-    }
-
-    public function testExecuteWithoutDto()
+    public function testItemProcessor()
     {
         // set up data importer
-        $csvReader = new CsvReader(
+        $reader = new CsvReader(
             $this->fs->getChild('books.csv')->url(),
             [CsvReader::CONTEXT_DELIMITER => ';']
         );
-        $dataImporter = new DataImporter($csvReader, new TestProcessor());
+        $archiver = new DateTimeArchiver($this->fs->getChild('archive')->url());
+        $dataImporter = new DataImporter($reader, new TestItemProcessor(), $archiver);
 
         $this->assertNotFalse($dataImporter->execute());
     }
 
-    public function testExecuteWithDto()
+    public function testBatchProcessor()
     {
         // set up data importer
-        $csvReader = new CsvReader(
-            $this->fs->getChild('books.csv')->url(),
-            [CsvReader::CONTEXT_DELIMITER => ';']
+        $reader = new XmlReader(
+            $this->fs->getChild('books.xml')->url(),
+            [XmlReader::CONTEXT_XPATH => 'shop/catalog']
         );
-        $csvReader->setDto(Book::class);
-        $dataImporter = new DataImporter($csvReader, new TestProcessor());
+        $archiver = new DateTimeArchiver($this->fs->getChild('archive')->url());
+        $dataImporter = new DataImporter($reader, new TestBatchProcessor(), $archiver);
 
         $this->assertNotFalse($dataImporter->execute());
     }
 
-    public function testExecuteWithUnreadableFile()
+    public function testWithDto()
+    {
+        // set up data importer
+        $reader = new CsvReader(
+            $this->fs->getChild('books.csv')->url(),
+            [CsvReader::CONTEXT_DELIMITER => ';']
+        );
+        $reader->setDto(Book::class);
+        $dataImporter = new DataImporter($reader, new TestItemProcessor());
+
+        $this->assertNotFalse($dataImporter->execute());
+    }
+
+    public function testWithWrongDto()
     {
         // test exception
         $this->expectException(\InvalidArgumentException::class);
+
         // set up data importer
-        $csvReader = new CsvReader(
+        $reader = new CsvReader(
+            $this->fs->getChild('books.csv')->url(),
+            [CsvReader::CONTEXT_DELIMITER => ';']
+        );
+        $reader->setDto('bool');
+        $dataImporter = new DataImporter($reader, new TestItemProcessor());
+
+        $dataImporter->execute();
+    }
+
+    public function testWithUnreadableFile()
+    {
+        // test exception
+        $this->expectException(\InvalidArgumentException::class);
+
+        // set up data importer
+        $reader = new CsvReader(
             $this->fs->getChild('books_unreadable.csv')->url(),
             [CsvReader::CONTEXT_DELIMITER => ';']
         );
-        $dataImporter = new DataImporter($csvReader, new TestProcessor());
+        $dataImporter = new DataImporter($reader, new TestItemProcessor());
+
+        $dataImporter->execute();
+    }
+
+    public function testWithUnreadableArchivePath()
+    {
+        // test exception
+        $this->expectException(IOException::class);
+
+        // set up data importer
+        $reader = new CsvReader(
+            $this->fs->getChild('books.csv')->url(),
+            [CsvReader::CONTEXT_DELIMITER => ';']
+        );
+        $archiver = new DateTimeArchiver($this->fs->getChild('archive_unreadable')->url());
+        $dataImporter = new DataImporter($reader, new TestItemProcessor(), $archiver);
 
         $dataImporter->execute();
     }
