@@ -48,7 +48,7 @@ class DataImporterTest extends TestCase
         $archiver = new DateTimeArchiver($this->fs->getChild('archive')->url());
         $dataImporter = new DataImporter($reader, new TestItemProcessor(), $archiver);
 
-        $this->assertNotFalse($dataImporter->execute());
+        $dataImporter->execute();
     }
 
     public function testBatchProcessor()
@@ -61,7 +61,7 @@ class DataImporterTest extends TestCase
         $archiver = new DateTimeArchiver($this->fs->getChild('archive')->url());
         $dataImporter = new DataImporter($reader, new TestBatchProcessor(), $archiver);
 
-        $this->assertNotFalse($dataImporter->execute());
+        $dataImporter->execute();
     }
 
     public function testWithDto()
@@ -74,7 +74,7 @@ class DataImporterTest extends TestCase
         $reader->setDto(Book::class);
         $dataImporter = new DataImporter($reader, new TestItemProcessor());
 
-        $this->assertNotFalse($dataImporter->execute());
+        $dataImporter->execute();
     }
 
     public function testWithWrongDto()

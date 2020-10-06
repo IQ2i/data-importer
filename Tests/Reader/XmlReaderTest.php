@@ -22,7 +22,7 @@ class XmlReaderTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         // init reader
-        $reader = new XmlReader(
+        new XmlReader(
             __DIR__.'/../fixtures/xml/books_with_wrong_path.xml',
             [XmlReader::CONTEXT_XPATH => 'shop/catalog']
         );
