@@ -11,11 +11,9 @@
 
 namespace IQ2i\DataImporter\Reader;
 
-use IQ2i\DataImporter\Traits\SerializerTrait;
-
 class CsvReader implements ReaderInterface
 {
-    use SerializerTrait;
+    use SerializableReaderTrait;
 
     const CONTEXT_DELIMITER = 'csv_delimiter';
     const CONTEXT_ENCLOSURE = 'csv_enclosure';

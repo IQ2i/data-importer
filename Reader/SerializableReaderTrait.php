@@ -1,8 +1,8 @@
 <?php
 
-namespace IQ2i\DataImporter\Traits;
+namespace IQ2i\DataImporter\Reader;
 
-trait SerializerTrait
+trait SerializableReaderTrait
 {
     private $dto;
 

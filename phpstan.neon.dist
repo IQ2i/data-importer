@@ -5,7 +5,6 @@ parameters:
         - Exchange
         - Processor
         - Reader
-        - Traits
         - DataImporter.php
     fileExtensions:
         - php

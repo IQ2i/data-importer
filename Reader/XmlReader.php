@@ -2,11 +2,9 @@
 
 namespace IQ2i\DataImporter\Reader;
 
-use IQ2i\DataImporter\Traits\SerializerTrait;
-
 class XmlReader implements ReaderInterface
 {
-    use SerializerTrait;
+    use SerializableReaderTrait;
 
     const CONTEXT_XPATH = 'xml_xpath';
 
