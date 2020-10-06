@@ -13,42 +13,41 @@ namespace IQ2i\DataImporter\Tests\Processor;
 
 use IQ2i\DataImporter\Exchange\Message;
 use IQ2i\DataImporter\Processor\BatchProcessorInterface;
-use IQ2i\DataImporter\Processor\ProcessorInterface;
 
 class TestBatchProcessor implements BatchProcessorInterface
 {
     const BATCH_SIZE = 2;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function begin(): void
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function item(Message $message): void
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function end(): void
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function batch()
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getBatchSize()
     {

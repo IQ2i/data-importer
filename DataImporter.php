@@ -13,7 +13,6 @@ namespace IQ2i\DataImporter;
 
 use IQ2i\DataImporter\Archiver\ArchiverInterface;
 use IQ2i\DataImporter\Exchange\MessageFactory;
-use IQ2i\DataImporter\Processor\BatchProcessor;
 use IQ2i\DataImporter\Processor\BatchProcessorInterface;
 use IQ2i\DataImporter\Processor\ProcessorInterface;
 use IQ2i\DataImporter\Reader\ReaderInterface;

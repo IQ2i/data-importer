@@ -11,8 +11,6 @@
 
 namespace IQ2i\DataImporter\Processor;
 
-use IQ2i\DataImporter\Exchange\Message;
-
 interface BatchProcessorInterface extends ProcessorInterface
 {
     /**

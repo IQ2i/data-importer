@@ -23,7 +23,7 @@ class XmlReaderTest extends TestCase
 
         // init reader
         $reader = new XmlReader(
-            __DIR__ . '/../fixtures/xml/books_with_wrong_path.xml',
+            __DIR__.'/../fixtures/xml/books_with_wrong_path.xml',
             [XmlReader::CONTEXT_XPATH => 'shop/catalog']
         );
     }

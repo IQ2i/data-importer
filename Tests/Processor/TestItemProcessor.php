@@ -17,21 +17,21 @@ use IQ2i\DataImporter\Processor\ProcessorInterface;
 class TestItemProcessor implements ProcessorInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function begin(): void
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function item(Message $message): void
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function end(): void
     {

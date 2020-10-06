@@ -11,7 +11,6 @@
 
 namespace IQ2i\DataImporter\Tests;
 
-use Cassandra\Date;
 use IQ2i\DataImporter\Archiver\DateTimeArchiver;
 use IQ2i\DataImporter\DataImporter;
 use IQ2i\DataImporter\Reader\CsvReader;
