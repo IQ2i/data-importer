@@ -23,38 +23,40 @@ This library offers you two readers, one for CSV files and another for XML files
 
 #### CsvReader
 
-By default, we consider that the CSV file has headers but you can change this behavior by passing a new context to the CsvReader.
+The CsvReader has only one mandatory parameter : the path of the CSV file to import.
+By default, we consider that the CSV file has headers, but you can change this behavior by passing a new context to the CsvReader as third constructor's argument.
 
 ```php
 use IQ2i\DataImporter\Reader\CsvReader;
 
-// read CSV files with header
+// read CSV file with header
 $csvReader = new CsvReader('/path/to/your/csv/file');
 
 // you can specify an other delimiter character
 $csvReader = new CsvReader(
     '/path/to/your/csv/file',
+    null,
     [
         CsvReader::DELIMITER_KEY => ';',
     ]
 );
-
-// or custom headers
-$csvReader = new CsvReader(
-    '/path/to/your/csv/file',
-    [
-        CsvReader::NO_HEADERS_KEY => true,
-        CsvReader::HEADERS_KEY => ['code', 'name', 'price'],
-    ]
-);
 ```
 
-It is possible to create your own reader, you just must implements the [ReaderInterface](Reader/ReaderInterface.php)
+It is possible to create your own reader by implementing the [ReaderInterface](Reader/ReaderInterface.php)
 
 #### XmlReader
 
-XmlReader let you specify the node you want to process by passing a new context in constructor.
-Take the following XML file:
+Just like the CsvReader, the XmlReader has only one mandatory parameter: the path to the XML file to import.
+
+```php
+use IQ2i\DataImporter\Reader\XmlReader;
+
+// read XML file
+$xmlReader = new XmlReader('/path/to/your/xml/file');
+```
+
+XmlReader let you specify the node you want to process by passing a new context to constructor.
+For example, take the following XML file:
 
 ```xml
 <?xml version="1.0"?>
@@ -87,6 +89,7 @@ use IQ2i\DataImporter\Reader\XmlReader;
 // you can specify an other delimiter character
 $xmlReader = new XmlReader(
     '/path/to/your/xml/file',
+    null,
     [
         XmlReader::XPATH_KEY => 'catalog/author/books',
     ]);
@@ -94,8 +97,8 @@ $xmlReader = new XmlReader(
 
 ### DTO
 
-By default, the reader will return an array with the headers as keys and the contents of each line as values.
-But if you want to work with real object, you can set a DTO.
+By default, the reader will return an array with the headers as keys, and the contents of each line as values.
+But if you want to work with real objects, you can use a DTO.
 
 Create a class that matches your data:
 
@@ -104,35 +107,38 @@ Create a class that matches your data:
 
 namespace App\DTO;
 
-class ArticleDTO
+class Book
 {
-    private $code;
-    private $manufacturer;
+    private $title;
+    private $genre;
     private $price;
+    private $description;
 
-    public function getCode(): ?string
+    public function getTitle(): string
     {
-        return $this->code;
+        return $this->title;
     }
 
-    public function setCode(string $code): self
+    public function setTitle(string $title): self
     {
-        $this->code = $code;
+        $this->title = $title;
+
         return $this;
     }
 
-    public function getManufacturer(): ?string
+    public function getGenre(): string
     {
-        return $this->manufacturer;
+        return $this->genre;
     }
 
-    public function setManufacturer(string $manufacturer): self
+    public function setGenre(string $genre): self
     {
-        $this->manufacturer = $manufacturer;
+        $this->genre = $genre;
+
         return $this;
     }
 
-    public function getPrice(): ?float
+    public function getPrice(): float
     {
         return $this->price;
     }
@@ -140,30 +146,45 @@ class ArticleDTO
     public function setPrice(float $price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
         return $this;
     }
 }
 ```
 
-And set the class to the DataImporter:
+And add the DTO in your reader's constructor:
 
 ```php
-use App\DTO\Article;
+use App\DTO\Book;
 use IQ2i\DataImporter\Reader\CsvReader;
 
-$csvReader = new CsvReader('/path/to/your/csv/file');
-$csvReader->setDto(Article::class);
+$csvReader = new CsvReader(
+    '/path/to/your/csv/file',
+    Book::class
+);
 ```
 
-For more informations about the DTO, see the [Symfony Serializer documentation](https://symfony.com/doc/current/components/serializer.html).
+For more information about the DTO, see the [Symfony Serializer documentation](https://symfony.com/doc/current/components/serializer.html).
 
 ### Processor
 
 Now, you need to create a processor. This is where you process each piece of file (a line in the case of CSV files).
 
-#### ItemProcessor
+#### Simple processor
 
-When you just need to process line by line, you can implements the [ProcessorInterface](Processor/ProcessorInterface.php).
+When you just need to process line by line, you can implement the [ProcessorInterface](Processor/ProcessorInterface.php).
 
 This is an example processor :
 
@@ -203,9 +224,9 @@ class ArticleProcessor implements ProcessorInterface
 }
 ```
 
-#### ItemProcessor
+#### Batch processor
 
-When you need to process line by line and execute an action X processed lines, you can implements the [BatchProcessorInterface](Processor/BatchProcessorInterface.php).
+When you need to process line by line and execute an action X processed lines, you have to implement the [BatchProcessorInterface](Processor/BatchProcessorInterface.php).
 
 Here is an example:
 
@@ -259,7 +280,7 @@ class ArticleProcessor implements BatchProcessorInterface
      */
     public function getBatchSize(): int
     {
-        // Return the size of each batch
+        return self::BATCH_SIZE;
     }
 }
 ```
@@ -277,7 +298,7 @@ $dataImporter = new DataImporter(
 );
 ```
 
-Finally, execute your import by passing the path of the folder where the files are located.
+Finally, launch import.
 
 ```php
 $dataImporter->execute();
@@ -303,7 +324,7 @@ $dataImporter = new DataImporter(
 );
 ```
 
-It is possible to create your own archiver, you just must implements the [ArchiverInterface](Archiver/ArchiverInterface.php)
+It is possible to create your own archiver by implementing the [ArchiverInterface](Archiver/ArchiverInterface.php)
 
 ## Issues and feature requests
 
