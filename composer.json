@@ -2,7 +2,7 @@
     "name": "iq2i/data-importer",
     "type": "library",
     "description": "A PHP library to easily manage and import large data file",
-    "keywords": ["php", "file", "data", "import", "csv"],
+    "keywords": ["php", "file", "data", "import", "csv", "xml", "dto"],
     "homepage": "https://github.com/IQ2i/data-importer",
     "license": "MIT",
     "authors": [
