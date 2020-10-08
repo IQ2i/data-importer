@@ -34,7 +34,7 @@ class DataImporter
         $this->archiver = $archiver;
     }
 
-    public function execute()
+    public function execute(): void
     {
         // callback before file processing
         $this->processor->begin();
