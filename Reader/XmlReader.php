@@ -6,6 +6,9 @@ class XmlReader implements ReaderInterface
 {
     const CONTEXT_XPATH = 'xml_xpath';
 
+    /**
+     * @var null|string
+     */
     private $dto;
     private $file;
     private $iterator;
@@ -28,10 +31,10 @@ class XmlReader implements ReaderInterface
         $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
 
         if (null === $this->defaultContext[self::CONTEXT_XPATH]) {
-            $this->iterator = new \SimpleXMLIterator($this->file->getPathname(), null, true);
+            $this->iterator = new \SimpleXMLIterator($this->file->getPathname(), 0, true);
         } else {
             // init SimpleXMLElement from path
-            $element = new \SimpleXMLElement($this->file->getPathname(), null, true);
+            $element = new \SimpleXMLElement($this->file->getPathname(), 0, true);
 
             // explode string into array
             $nodes = explode('/', $this->defaultContext[self::CONTEXT_XPATH]);
