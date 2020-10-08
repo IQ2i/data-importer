@@ -22,7 +22,6 @@
             <directory suffix=".php">./Exchange</directory>
             <directory suffix=".php">./Processor</directory>
             <directory suffix=".php">./Reader</directory>
-            <directory suffix=".php">./Traits</directory>
             <file>./DataImporter.php</file>
         </whitelist>
     </filter>

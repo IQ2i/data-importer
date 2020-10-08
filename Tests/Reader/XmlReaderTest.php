@@ -16,19 +16,30 @@ use PHPUnit\Framework\TestCase;
 
 class XmlReaderTest extends TestCase
 {
+    public function testReadXmlWithUnreadableFile()
+    {
+        // test exception
+        $this->expectException(\InvalidArgumentException::class);
+
+        // init reader
+        new XmlReader(
+            __DIR__.'/../fixtures/xml/books_with_wrong_path.xml',
+            null,
+            [XmlReader::CONTEXT_XPATH => 'shop/catalog']
+        );
+    }
+
     public function testReadXmlWithXpath()
     {
         // init reader
-        $reader = new XmlReader([
-            XmlReader::XPATH_KEY => 'shop/catalog',
-        ]);
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_with_xpath.xml'));
-
-        // test default configuration
-        $this->assertEquals('/.xml/', $reader->getDefaultFileRegex());
+        $reader = new XmlReader(
+            __DIR__.'/../fixtures/xml/books_with_xpath.xml',
+            null,
+            [XmlReader::CONTEXT_XPATH => 'shop/catalog']
+        );
 
         // test denormalization
-        $this->assertTrue($reader->isDenormalizable());
+        $this->assertFalse($reader->isDenormalizable());
 
         // test count
         $this->assertEquals(2, count($reader));
@@ -78,14 +89,13 @@ class XmlReaderTest extends TestCase
     public function testReadXmlWithoutXpath()
     {
         // init reader
-        $reader = new XmlReader();
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_without_xpath.xml'));
-
-        // test default configuration
-        $this->assertEquals('/.xml/', $reader->getDefaultFileRegex());
+        $reader = new XmlReader(
+            __DIR__.'/../fixtures/xml/books_without_xpath.xml',
+            null
+        );
 
         // test denormalization
-        $this->assertTrue($reader->isDenormalizable());
+        $this->assertFalse($reader->isDenormalizable());
 
         // test count
         $this->assertEquals(2, count($reader));
@@ -138,10 +148,11 @@ class XmlReaderTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         // init reader
-        $reader = new XmlReader([
-            XmlReader::XPATH_KEY => 'foo',
-        ]);
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_with_xpath.xml'));
+        new XmlReader(
+            __DIR__.'/../fixtures/xml/books_with_xpath.xml',
+            null,
+            [XmlReader::CONTEXT_XPATH => 'foo']
+        );
     }
 
     public function testReadXmlWithIncorrectXpath()
@@ -150,9 +161,10 @@ class XmlReaderTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         // init reader
-        $reader = new XmlReader([
-            XmlReader::XPATH_KEY => 'shop/foo',
-        ]);
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/xml/books_with_xpath.xml'));
+        new XmlReader(
+            __DIR__.'/../fixtures/xml/books_with_xpath.xml',
+            null,
+            [XmlReader::CONTEXT_XPATH => 'shop/foo']
+        );
     }
 }

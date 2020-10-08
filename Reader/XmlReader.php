@@ -2,61 +2,66 @@
 
 namespace IQ2i\DataImporter\Reader;
 
-use IQ2i\DataImporter\Traits\SerializerTrait;
-
 class XmlReader implements ReaderInterface
 {
-    use SerializerTrait;
-
-    const FILE_REGEX_KEY = 'xml_file_regex';
-    const XPATH_KEY = 'xml_xpath';
-
-    private $file;
-    private $index = 1;
-    private $defaultContext = [
-        self::FILE_REGEX_KEY  => '/.xml/',
-        self::XPATH_KEY       => null,
-    ];
-
-    public function __construct(array $defaultContext = [])
-    {
-        $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
-    }
+    const CONTEXT_XPATH = 'xml_xpath';
 
     /**
-     * {@inheritdoc}
+     * @var null|string
      */
-    public function setFile(\SplFileObject $file): void
+    private $dto;
+    private $file;
+    private $iterator;
+    private $index = 1;
+    private $defaultContext = [
+        self::CONTEXT_XPATH => null,
+    ];
+
+    public function __construct(string $filePath, ?string $dto = null, array $defaultContext = [])
     {
-        if (null === $this->defaultContext[self::XPATH_KEY]) {
-            $this->file = new \SimpleXMLIterator($file->getPathname(), null, true);
+        // create a new SplInfo from path
+        $this->file = new \SplFileInfo($filePath);
+
+        // check if file is readable
+        if (!$this->file->isReadable()) {
+            throw new \InvalidArgumentException('The file '.$this->file->getFilename().' is not readable.');
+        }
+
+        // update default context
+        $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
+
+        if (null === $this->defaultContext[self::CONTEXT_XPATH]) {
+            $this->iterator = new \SimpleXMLIterator($this->file->getPathname(), 0, true);
         } else {
             // init SimpleXMLElement from path
-            $element = new \SimpleXMLElement($file->getPathname(), null, true);
+            $element = new \SimpleXMLElement($this->file->getPathname(), 0, true);
 
             // explode string into array
-            $nodes = explode('/', $this->defaultContext[self::XPATH_KEY]);
+            $nodes = explode('/', $this->defaultContext[self::CONTEXT_XPATH]);
 
             // get first node (current element node)
             $rootNode = array_shift($nodes);
 
             if ($rootNode !== $element->getName()) {
-                throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::XPATH_KEY].'" is incorrect.');
+                throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::CONTEXT_XPATH].'" is incorrect.');
             }
 
             // go to the asked node
             foreach ($nodes as $node) {
                 // check if child exist
                 if (!isset($element->{$node})) {
-                    throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::XPATH_KEY].'" is incorrect.');
+                    throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::CONTEXT_XPATH].'" is incorrect.');
                 }
 
                 // update current element
                 $element = $element->{$node};
             }
 
-            $this->file = new \SimpleXMLIterator($element->asXML());
+            $this->iterator = new \SimpleXMLIterator($element->asXML());
         }
+
+        // set dto
+        $this->dto = $dto;
 
         // must rewind before use
         $this->rewind();
@@ -65,17 +70,25 @@ class XmlReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function isDenormalizable(): bool
+    public function getDto(): ?string
     {
-        return true;
+        return $this->dto;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getDefaultFileRegex(): string
+    public function isDenormalizable(): bool
     {
-        return $this->defaultContext[self::FILE_REGEX_KEY];
+        return null !== $this->dto;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFile(): \SplFileInfo
+    {
+        return $this->file;
     }
 
     /**
@@ -95,7 +108,7 @@ class XmlReader implements ReaderInterface
             return [];
         }
 
-        return self::transformToArray($this->file->current());
+        return self::transformToArray($this->iterator->current());
     }
 
     /**
@@ -103,7 +116,7 @@ class XmlReader implements ReaderInterface
      */
     public function next()
     {
-        $this->file->next();
+        $this->iterator->next();
         ++$this->index;
     }
 
@@ -112,7 +125,7 @@ class XmlReader implements ReaderInterface
      */
     public function key()
     {
-        return $this->file->key();
+        return $this->iterator->key();
     }
 
     /**
@@ -120,7 +133,7 @@ class XmlReader implements ReaderInterface
      */
     public function valid()
     {
-        return $this->file->valid();
+        return $this->iterator->valid();
     }
 
     /**
@@ -128,7 +141,7 @@ class XmlReader implements ReaderInterface
      */
     public function rewind()
     {
-        $this->file->rewind();
+        $this->iterator->rewind();
     }
 
     /**
@@ -136,11 +149,13 @@ class XmlReader implements ReaderInterface
      */
     public function count()
     {
-        return $this->file->count();
+        return $this->iterator->count();
     }
 
     /**
      * Transform SimpleXMLIterator into array.
+     *
+     * TODO: move this method to a helper or an util class
      */
     private static function transformToArray(\SimpleXMLIterator $iterator): array
     {

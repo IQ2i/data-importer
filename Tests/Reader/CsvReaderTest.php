@@ -19,16 +19,20 @@ class CsvReaderTest extends TestCase
     public function testReadCsvFileWithHeader()
     {
         // init reader
-        $reader = new CsvReader([
-            CsvReader::DELIMITER_KEY => ';',
-        ]);
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/csv/books_with_headers.csv'));
-
-        // test default configuration
-        $this->assertEquals('/.csv/', $reader->getDefaultFileRegex());
+        $reader = new CsvReader(
+            __DIR__.'/../fixtures/csv/books_with_headers.csv',
+            null,
+            [CsvReader::CONTEXT_DELIMITER => ';']
+        );
 
         // test denormalization
-        $this->assertTrue($reader->isDenormalizable());
+        $this->assertFalse($reader->isDenormalizable());
+
+        // test file
+        $this->assertEquals(
+            new \SplFileInfo(__DIR__.'/../fixtures/csv/books_with_headers.csv'),
+            $reader->getFile()
+        );
 
         // test count
         $this->assertEquals(2, count($reader));
@@ -75,17 +79,23 @@ class CsvReaderTest extends TestCase
     public function testReadCsvWithoutHeader()
     {
         // init reader
-        $reader = new CsvReader([
-            CsvReader::DELIMITER_KEY  => ';',
-            CsvReader::NO_HEADERS_KEY => true,
-        ]);
-        $reader->setFile(new \SplFileObject(__DIR__.'/../fixtures/csv/books_without_headers.csv'));
-
-        // test default configuration
-        $this->assertEquals('/.csv/', $reader->getDefaultFileRegex());
+        $reader = new CsvReader(
+            __DIR__.'/../fixtures/csv/books_without_headers.csv',
+            null,
+            [
+                CsvReader::CONTEXT_DELIMITER  => ';',
+                CsvReader::CONTEXT_NO_HEADERS => true,
+            ]
+        );
 
         // test denormalization
         $this->assertFalse($reader->isDenormalizable());
+
+        // test file
+        $this->assertEquals(
+            new \SplFileInfo(__DIR__.'/../fixtures/csv/books_without_headers.csv'),
+            $reader->getFile()
+        );
 
         // test count
         $this->assertEquals(2, count($reader));

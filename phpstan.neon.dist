@@ -1,11 +1,10 @@
 parameters:
-    level: 1
+    level: 5
     paths:
         - Archiver
         - Exchange
         - Processor
         - Reader
-        - Traits
         - DataImporter.php
     fileExtensions:
         - php

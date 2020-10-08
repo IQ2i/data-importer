@@ -15,11 +15,11 @@ use IQ2i\DataImporter\Reader\ReaderInterface;
 
 class MessageFactory
 {
-    public static function create(\SplFileInfo $file, ReaderInterface $reader, $data): Message
+    public static function create(ReaderInterface $reader, $data): Message
     {
         return new Message(
-            $file->getFilename(),
-            $file->getPathname(),
+            $reader->getFile()->getFilename(),
+            $reader->getFile()->getPathname(),
             $reader->index(),
             $reader->count(),
             $data

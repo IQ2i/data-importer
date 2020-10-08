@@ -14,9 +14,26 @@ namespace IQ2i\DataImporter\Tests\Processor;
 use IQ2i\DataImporter\Exchange\Message;
 use IQ2i\DataImporter\Processor\ProcessorInterface;
 
-class TestProcessor implements ProcessorInterface
+class TestItemProcessor implements ProcessorInterface
 {
-    public function process(Message $message)
+    /**
+     * {@inheritdoc}
+     */
+    public function begin(): void
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function item(Message $message): void
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function end(): void
     {
     }
 }

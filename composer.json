@@ -2,7 +2,7 @@
     "name": "iq2i/data-importer",
     "type": "library",
     "description": "A PHP library to easily manage and import large data file",
-    "keywords": ["php", "file", "data", "import", "csv"],
+    "keywords": ["php", "file", "data", "import", "csv", "xml", "dto"],
     "homepage": "https://github.com/IQ2i/data-importer",
     "license": "MIT",
     "authors": [
@@ -14,7 +14,6 @@
     "require": {
         "php": "^7.2.5",
         "symfony/filesystem": "^4.0|^5.0",
-        "symfony/finder": "^4.0|^5.0",
         "symfony/property-access": "^4.0|^5.0",
         "symfony/serializer": "^4.0|^5.0"
     },
