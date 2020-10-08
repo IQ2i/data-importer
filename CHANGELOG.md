@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+2.0.0
+-----
+
+* now data-importer manage only one file at a time
+* add begin() and end() methods to processor
+* add a new processor interface to manage batch process
+
 1.2.0
 -----
 
