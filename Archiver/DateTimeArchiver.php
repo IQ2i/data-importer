@@ -3,7 +3,7 @@
 /*
  * This file is part of the DataImporter package.
  *
- * (c) Loïc Sapone <contact@iq2i.com>
+ * (c) Loïc Sapone <loic@sapone.fr>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
