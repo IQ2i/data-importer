@@ -54,7 +54,7 @@ class DataImporter
             if (
                 $this->processor instanceof BatchProcessorInterface
                 && (
-                    0 === $message->getCurrentIteration() % $message->getTotalIteration()
+                    0 === $message->getCurrentIteration() % $this->processor->getBatchSize()
                     || $message->getCurrentIteration() === $message->getTotalIteration()
                 )
             ) {
