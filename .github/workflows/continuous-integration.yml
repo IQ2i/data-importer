@@ -10,16 +10,12 @@ on:
 
 jobs:
   tests:
-    name: "CI"
-
-    runs-on: ubuntu-latest
+    name: "CI ${{ matrix.operating-system }} / PHP ${{ matrix.php-version }}"
+    runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        php-version:
-          - "7.2"
-          - "7.3"
-          - "7.4"
-          - "8.0"
+        operating-system: ['ubuntu-latest', 'macos-latest']
+        php-version: ['7.2.5', '7.3', '7.4', '8.0']
 
     steps:
       - name: "Checkout"
