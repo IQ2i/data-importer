@@ -45,7 +45,6 @@ jobs:
         run: ./vendor/bin/phpunit
 
       - name: Test PHP-CS-Fixer
-        if: matrix.php-version != '8.0'
         run: php-cs-fixer fix --dry-run --diff --no-ansi
 
       - name: Test PHPStan
