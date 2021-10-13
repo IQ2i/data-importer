@@ -1,10 +1,10 @@
 <?php
 
-$finder = PhpCsFixer\Finder::create()
+$finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
 ;
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setRules(
         [
             '@PSR1' => true,
@@ -28,5 +28,4 @@ return PhpCsFixer\Config::create()
             'phpdoc_types_order' => true,
         ]
     )
-    ->setFinder($finder)
-    ;
+    ->setFinder($finder);
