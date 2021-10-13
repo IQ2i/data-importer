@@ -13,11 +13,11 @@ namespace IQ2i\DataImporter\Reader;
 
 class CsvReader implements ReaderInterface
 {
-    const CONTEXT_DELIMITER = 'csv_delimiter';
-    const CONTEXT_ENCLOSURE = 'csv_enclosure';
-    const CONTEXT_ESCAPE_CHAR = 'csv_escape_char';
-    const CONTEXT_HEADERS = 'csv_headers';
-    const CONTEXT_NO_HEADERS = 'no_headers';
+    public const CONTEXT_DELIMITER = 'csv_delimiter';
+    public const CONTEXT_ENCLOSURE = 'csv_enclosure';
+    public const CONTEXT_ESCAPE_CHAR = 'csv_escape_char';
+    public const CONTEXT_HEADERS = 'csv_headers';
+    public const CONTEXT_NO_HEADERS = 'no_headers';
 
     private $dto;
     private $file;

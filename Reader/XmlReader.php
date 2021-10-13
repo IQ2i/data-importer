@@ -4,7 +4,7 @@ namespace IQ2i\DataImporter\Reader;
 
 class XmlReader implements ReaderInterface
 {
-    const CONTEXT_XPATH = 'xml_xpath';
+    public const CONTEXT_XPATH = 'xml_xpath';
 
     /**
      * @var null|string
