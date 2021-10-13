@@ -12,14 +12,14 @@
         }
     ],
     "require": {
-        "php": "^7.2.5|^8.0",
-        "symfony/filesystem": "^4.0|^5.0",
-        "symfony/property-access": "^4.0|^5.0",
-        "symfony/serializer": "^4.0|^5.0"
+        "php": "^7.2.5 || ^8.0",
+        "symfony/filesystem": "^4.0 || ^5.0 || ^6.0",
+        "symfony/property-access": "^4.0 || ^5.0 || ^6.0",
+        "symfony/serializer": "^4.0 || ^5.0 || ^6.0"
     },
     "require-dev": {
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^8|^9"
+        "phpunit/phpunit": "^8 || ^9",
     },
     "autoload": {
         "psr-4": { "IQ2i\\DataImporter\\": "" }
