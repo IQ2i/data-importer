@@ -41,12 +41,12 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Test PHPUnit
-        run: ./vendor/bin/phpunit
-
       - name: Test PHP-CS-Fixer
         if: matrix.php-version != '8.1'
-        run: php-cs-fixer fix --dry-run --diff --no-ansi
+        run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-ansi
 
       - name: Test PHPStan
-        run: phpstan analyse
+        run: ./vendor/bin/phpstan analyse
+
+      - name: Test PHPUnit
+        run: ./vendor/bin/phpunit

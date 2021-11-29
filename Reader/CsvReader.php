@@ -135,7 +135,7 @@ class CsvReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function next()
+    public function next(): void
     {
         $this->iterator->next();
         ++$this->index;
@@ -143,6 +143,8 @@ class CsvReader implements ReaderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return mixed
      */
     public function key()
     {
@@ -152,7 +154,7 @@ class CsvReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->iterator->valid();
     }
@@ -160,7 +162,7 @@ class CsvReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->iterator->rewind();
 
@@ -175,7 +177,7 @@ class CsvReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function count()
+    public function count(): int
     {
         return $this->count;
     }

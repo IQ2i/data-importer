@@ -11,6 +11,8 @@
 
 namespace IQ2i\DataImporter\Reader;
 
+use ReturnTypeWillChange;
+
 interface ReaderInterface extends \Iterator, \Countable
 {
     /**
@@ -41,25 +43,26 @@ interface ReaderInterface extends \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
-    public function next();
+    public function next(): void;
 
     /**
      * {@inheritdoc}
      */
+    #[ReturnTypeWillChange]
     public function key();
 
     /**
      * {@inheritdoc}
      */
-    public function valid();
+    public function valid(): bool;
 
     /**
      * {@inheritdoc}
      */
-    public function rewind();
+    public function rewind(): void;
 
     /**
      * {@inheritdoc}
      */
-    public function count();
+    public function count(): int;
 }
