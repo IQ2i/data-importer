@@ -1,8 +1,6 @@
 # iq2i/data-importer
 
 [![Continuous Integration](https://github.com/IQ2i/data-importer/workflows/Continuous%20Integration/badge.svg?branch=master)](https://github.com/IQ2i/data-importer/actions)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/IQ2i/data-importer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/IQ2i/data-importer/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/IQ2i/data-importer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/IQ2i/data-importer/?branch=master)
 
 A PHP library to easily manage and import large data file.
 
