@@ -25,11 +25,11 @@ class CsvReader implements ReaderInterface
     private $count = 0;
     private $index = 1;
     private $defaultContext = [
-        self::CONTEXT_DELIMITER   => ',',
-        self::CONTEXT_ENCLOSURE   => '"',
+        self::CONTEXT_DELIMITER => ',',
+        self::CONTEXT_ENCLOSURE => '"',
         self::CONTEXT_ESCAPE_CHAR => '',
-        self::CONTEXT_HEADERS     => [],
-        self::CONTEXT_NO_HEADERS  => false,
+        self::CONTEXT_HEADERS => [],
+        self::CONTEXT_NO_HEADERS => false,
     ];
 
     public function __construct(string $filePath, ?string $dto = null, array $defaultContext = [])

@@ -42,7 +42,7 @@ class XmlReaderTest extends TestCase
         $this->assertFalse($reader->isDenormalizable());
 
         // test count
-        $this->assertEquals(2, count($reader));
+        $this->assertEquals(2, \count($reader));
 
         // test index
         $this->assertEquals(1, $reader->index());
@@ -69,13 +69,13 @@ class XmlReaderTest extends TestCase
         $this->assertEquals(2, $reader->index());
         $this->assertEquals(
             [
-                'author'      => [
+                'author' => [
                     'firstname' => 'Kim',
-                    'lastname'  => 'Ralls',
+                    'lastname' => 'Ralls',
                 ],
-                'title'       => 'Midnight Rain',
-                'genre'       => 'Fantasy',
-                'price'       => '5.95',
+                'title' => 'Midnight Rain',
+                'genre' => 'Fantasy',
+                'price' => '5.95',
                 'description' => 'A former architect battles corporate zombies, an evil sorceress, and her own childhood to become queen of the world.',
             ],
             $reader->current()
@@ -98,7 +98,7 @@ class XmlReaderTest extends TestCase
         $this->assertFalse($reader->isDenormalizable());
 
         // test count
-        $this->assertEquals(2, count($reader));
+        $this->assertEquals(2, \count($reader));
 
         // test index
         $this->assertEquals(1, $reader->index());
@@ -125,13 +125,13 @@ class XmlReaderTest extends TestCase
         $this->assertEquals(2, $reader->index());
         $this->assertEquals(
             [
-                'author'      => [
+                'author' => [
                     'firstname' => 'Kim',
-                    'lastname'  => 'Ralls',
+                    'lastname' => 'Ralls',
                 ],
-                'title'       => 'Midnight Rain',
-                'genre'       => 'Fantasy',
-                'price'       => '5.95',
+                'title' => 'Midnight Rain',
+                'genre' => 'Fantasy',
+                'price' => '5.95',
                 'description' => 'A former architect battles corporate zombies, an evil sorceress, and her own childhood to become queen of the world.',
             ],
             $reader->current()

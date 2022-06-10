@@ -7,7 +7,7 @@ class XmlReader implements ReaderInterface
     public const CONTEXT_XPATH = 'xml_xpath';
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $dto;
     private $file;
@@ -164,7 +164,7 @@ class XmlReader implements ReaderInterface
         $result = [];
 
         foreach ((array) $iterator as $index => $node) {
-            if (is_object($node)) {
+            if (\is_object($node)) {
                 $result[$index] = self::transformToArray($node);
             } else {
                 $result[$index] = $node;

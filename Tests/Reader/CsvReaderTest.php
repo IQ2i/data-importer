@@ -35,7 +35,7 @@ class CsvReaderTest extends TestCase
         );
 
         // test count
-        $this->assertEquals(2, count($reader));
+        $this->assertEquals(2, \count($reader));
 
         // test index
         $this->assertEquals(1, $reader->index());
@@ -62,10 +62,10 @@ class CsvReaderTest extends TestCase
         $this->assertEquals(2, $reader->index());
         $this->assertEquals(
             [
-                'author'      => 'Ralls, Kim',
-                'title'       => 'Midnight Rain',
-                'genre'       => 'Fantasy',
-                'price'       => '5.95',
+                'author' => 'Ralls, Kim',
+                'title' => 'Midnight Rain',
+                'genre' => 'Fantasy',
+                'price' => '5.95',
                 'description' => 'A former architect battles corporate zombies, an evil sorceress, and her own childhood to become queen of the world.',
             ],
             $reader->current()
@@ -83,7 +83,7 @@ class CsvReaderTest extends TestCase
             __DIR__.'/../fixtures/csv/books_without_headers.csv',
             null,
             [
-                CsvReader::CONTEXT_DELIMITER  => ';',
+                CsvReader::CONTEXT_DELIMITER => ';',
                 CsvReader::CONTEXT_NO_HEADERS => true,
             ]
         );
@@ -98,7 +98,7 @@ class CsvReaderTest extends TestCase
         );
 
         // test count
-        $this->assertEquals(2, count($reader));
+        $this->assertEquals(2, \count($reader));
 
         // test index
         $this->assertEquals(1, $reader->index());

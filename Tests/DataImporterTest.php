@@ -26,7 +26,7 @@ class DataImporterTest extends TestCase
 {
     private $fs;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->fs = vfsStream::setup();
 
