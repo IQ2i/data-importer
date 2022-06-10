@@ -40,9 +40,4 @@ jobs:
         run: ./vendor/bin/phpstan analyse
 
       - name: Test PHPUnit
-        run: ./vendor/bin/phpunit --coverage-clover=coverage.clover
-
-      - name: Upload coverage to Scrutinizer
-        run: |
-          composer global require scrutinizer/ocular
-          ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
+        run: ./vendor/bin/phpunit
