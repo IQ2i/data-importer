@@ -4,8 +4,3 @@ parameters:
         - src
     fileExtensions:
         - php
-    reportUnmatchedIgnoredErrors: false
-    ignoreErrors:
-        -
-            message: '#Else branch is unreachable because ternary operator condition is always true.#'
-            path: src/Reader/CsvReader.php
