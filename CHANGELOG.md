@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+3.0.0
+-----
+
+* add Docker environment
+* remove support to PHP 7.2 and PHP 7.3
+* upgrade dependencies
+
 2.3.0
 -----
 
