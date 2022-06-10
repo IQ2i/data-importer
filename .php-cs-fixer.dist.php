@@ -8,6 +8,6 @@ return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setFinder(
         (new PhpCsFixer\Finder())
-            ->in(__DIR__)
+            ->in(__DIR__.'/src')
     )
     ;

@@ -12,17 +12,13 @@
 >
     <testsuites>
         <testsuite name="DataImporter Test Suite">
-            <directory suffix=".php">./Tests/</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./Archiver</directory>
-            <directory suffix=".php">./Exchange</directory>
-            <directory suffix=".php">./Processor</directory>
-            <directory suffix=".php">./Reader</directory>
-            <file>./DataImporter.php</file>
-        </whitelist>
-    </filter>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </coverage>
 </phpunit>

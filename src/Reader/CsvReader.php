@@ -123,13 +123,15 @@ class CsvReader implements ReaderInterface
             return [];
         }
 
-        if (!empty($this->defaultContext[self::CONTEXT_HEADERS])) {
-            $current = array_combine($this->defaultContext[self::CONTEXT_HEADERS], $this->iterator->current());
-
-            return false !== $current ? $current : [];
+        if (empty($this->defaultContext[self::CONTEXT_HEADERS])) {
+            return $this->iterator->current();
         }
 
-        return $this->iterator->current();
+        if (\count($this->defaultContext[self::CONTEXT_HEADERS]) === \count($this->iterator->current())) {
+            return array_combine($this->defaultContext[self::CONTEXT_HEADERS], $this->iterator->current());
+        }
+
+        return [];
     }
 
     /**
