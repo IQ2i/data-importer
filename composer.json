@@ -24,9 +24,9 @@
         "phpunit/phpunit": "^9"
     },
     "autoload": {
-        "psr-4": { "IQ2i\\DataImporter\\": "" }
+        "psr-4": { "IQ2i\\DataImporter\\": "src" }
     },
     "autoload-dev": {
-        "psr-4": { "IQ2i\\DataImporter\\Tests\\": "Tests/" }
+        "psr-4": { "IQ2i\\DataImporter\\Tests\\": "tests" }
     }
 }
