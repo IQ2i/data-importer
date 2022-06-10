@@ -3,10 +3,10 @@ name: "Continuous Integration"
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   tests:
@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         operating-system: ['ubuntu-latest', 'macos-latest']
-        php-version: ['7.2.5', '7.3', '7.4', '8.0', '8.1']
+        php-version: ['7.3', '7.4', '8.0', '8.1']
 
     steps:
       - name: Checkout
@@ -27,24 +27,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "${{ matrix.php-version }}"
-          tools: composer:v2, php-cs-fixer, phpstan
-
-      - name: Get composer cache directory
-        id: composercache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.composercache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
 
       - name: Test PHP-CS-Fixer
-        if: matrix.php-version != '8.1'
         run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-ansi
 
       - name: Test PHPStan
