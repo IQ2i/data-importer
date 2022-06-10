@@ -12,26 +12,21 @@
         }
     ],
     "require": {
-        "php": "^7.2.5 || ^8.0",
-        "symfony/filesystem": "^4.0 || ^5.0 || ^6.0",
-        "symfony/property-access": "^4.0 || ^5.0 || ^6.0",
-        "symfony/serializer": "^4.0 || ^5.0 || ^6.0"
+        "php": "^7.3 || ^8.0",
+        "symfony/filesystem": "^5.0 || ^6.0",
+        "symfony/property-access": "^5.0 || ^6.0",
+        "symfony/serializer": "^5.0 || ^6.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.2",
+        "friendsofphp/php-cs-fixer": "^3.8",
         "mikey179/vfsstream": "^1.6",
-        "phpstan/phpstan": "^0.12.99",
-        "phpunit/phpunit": "^8 || ^9"
+        "phpstan/phpstan": "^1.5",
+        "phpunit/phpunit": "^9"
     },
     "autoload": {
         "psr-4": { "IQ2i\\DataImporter\\": "" }
     },
     "autoload-dev": {
         "psr-4": { "IQ2i\\DataImporter\\Tests\\": "Tests/" }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
-        }
     }
 }
