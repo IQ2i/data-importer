@@ -15,7 +15,7 @@ use IQ2i\DataImporter\Archiver\DateTimeArchiver;
 use IQ2i\DataImporter\DataImporter;
 use IQ2i\DataImporter\Reader\CsvReader;
 use IQ2i\DataImporter\Reader\XmlReader;
-use IQ2i\DataImporter\Tests\Dto\Book;
+use IQ2i\DataImporter\Tests\fixtures\Dto\Book;
 use IQ2i\DataImporter\Tests\Processor\TestBatchProcessor;
 use IQ2i\DataImporter\Tests\Processor\TestItemProcessor;
 use org\bovigo\vfs\vfsStream;

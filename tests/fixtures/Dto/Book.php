@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace IQ2i\DataImporter\Tests\Dto;
+namespace IQ2i\DataImporter\Tests\fixtures\Dto;
 
 class Book
 {
