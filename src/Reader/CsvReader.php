@@ -19,12 +19,12 @@ class CsvReader implements ReaderInterface
     public const CONTEXT_HEADERS = 'csv_headers';
     public const CONTEXT_NO_HEADERS = 'no_headers';
 
-    private $dto;
-    private $file;
-    private $iterator;
-    private $count = 0;
-    private $index = 1;
-    private $defaultContext = [
+    private ?string $dto;
+    private \SplFileInfo $file;
+    private \SplFileObject $iterator;
+    private int $count = 0;
+    private int $index = 1;
+    private array $defaultContext = [
         self::CONTEXT_DELIMITER => ',',
         self::CONTEXT_ENCLOSURE => '"',
         self::CONTEXT_ESCAPE_CHAR => '',

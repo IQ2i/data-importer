@@ -15,6 +15,9 @@ use IQ2i\DataImporter\Reader\ReaderInterface;
 
 class MessageFactory
 {
+    /**
+     * @param mixed $data
+     */
     public static function create(ReaderInterface $reader, $data): Message
     {
         return new Message(

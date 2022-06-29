@@ -9,14 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Bundle\Command;
+namespace IQ2i\DataImporter\Tests\Bundle\Command;
 
-use IQ2i\DataImporter\Bundle\Command\AbstractImportCommand;
-use IQ2i\DataImporter\Exchange\Message;
 use IQ2i\DataImporter\Tests\fixtures\Command\BookImportCommand;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 

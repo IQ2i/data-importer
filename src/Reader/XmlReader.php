@@ -15,14 +15,11 @@ class XmlReader implements ReaderInterface
 {
     public const CONTEXT_XPATH = 'xml_xpath';
 
-    /**
-     * @var string|null
-     */
-    private $dto;
-    private $file;
-    private $iterator;
-    private $index = 1;
-    private $defaultContext = [
+    private ?string $dto;
+    private \SplFileInfo $file;
+    private \SimpleXMLIterator $iterator;
+    private int $index = 1;
+    private array $defaultContext = [
         self::CONTEXT_XPATH => null,
     ];
 

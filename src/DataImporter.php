@@ -23,9 +23,9 @@ use Symfony\Component\Serializer\Serializer;
 
 class DataImporter
 {
-    private $reader;
-    private $processor;
-    private $archiver;
+    private ReaderInterface $reader;
+    private ProcessorInterface $processor;
+    private ?ArchiverInterface $archiver;
 
     public function __construct(ReaderInterface $reader, ProcessorInterface $processor, ?ArchiverInterface $archiver = null)
     {

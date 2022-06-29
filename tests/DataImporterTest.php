@@ -19,12 +19,13 @@ use IQ2i\DataImporter\Tests\fixtures\Dto\Book;
 use IQ2i\DataImporter\Tests\Processor\TestBatchProcessor;
 use IQ2i\DataImporter\Tests\Processor\TestItemProcessor;
 use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
 
 class DataImporterTest extends TestCase
 {
-    private $fs;
+    private vfsStreamDirectory $fs;
 
     protected function setUp(): void
     {

@@ -13,11 +13,12 @@ namespace IQ2i\DataImporter\Tests\Archiver;
 
 use IQ2i\DataImporter\Archiver\DateTimeArchiver;
 use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 
 class DateTimeArchiverTest extends TestCase
 {
-    private $fs;
+    private vfsStreamDirectory $fs;
 
     protected function setUp(): void
     {
