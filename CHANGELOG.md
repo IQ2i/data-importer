@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+3.1.0
+-----
+
+* move source files into a src folder
+* downgrade docker PHP version to minimum version required by this package
+* add an abstract command to create Symfony command
+
 3.0.0
 -----
 
