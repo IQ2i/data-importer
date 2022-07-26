@@ -32,12 +32,12 @@ abstract class AbstractImportCommand extends Command
 
     abstract protected function handleItem(): callable;
 
-    abstract protected function getReader(string $filename): ReaderInterface;
+    abstract protected function getReader(?string $filename = null): ReaderInterface;
 
     protected function configure(): void
     {
         $this
-            ->addArgument('filename', InputArgument::REQUIRED, 'File to import')
+            ->addArgument('filename', InputArgument::OPTIONAL, 'File to import')
             ->addOption('step', null, InputOption::VALUE_NONE, 'Step through each record one-by-one')
             ->addOption('pause-on-error', null, InputOption::VALUE_NONE, 'Pause if an exception is thrown')
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Batch size', 100)
