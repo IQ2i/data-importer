@@ -19,6 +19,9 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class CliProcessor implements BatchProcessorInterface
 {
@@ -32,13 +35,16 @@ class CliProcessor implements BatchProcessorInterface
     private bool $pauseOnError;
     private int $batchSize;
 
+    private Serializer $serializer;
+
     private array $errors;
 
     public function __construct(
         InputInterface $input,
         OutputInterface $output,
         callable $handleItem,
-        callable $handleBatch
+        callable $handleBatch,
+        ?Serializer $serializer = null
     ) {
         $this->output = $output;
         $this->handleItem = $handleItem;
@@ -53,6 +59,8 @@ class CliProcessor implements BatchProcessorInterface
         }
         $this->pauseOnError = (bool) $input->getOption('pause-on-error');
         $this->batchSize = (int) $input->getOption('batch-size');
+
+        $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
     }
 
     public function begin()
@@ -130,10 +138,12 @@ class CliProcessor implements BatchProcessorInterface
     {
         $result = [];
 
-        if (\is_array($data)) {
-            foreach ($data as $key => $value) {
-                $result[] = [$key => $value];
-            }
+        if (\is_object($data)) {
+            $data = $this->serializer->normalize($data);
+        }
+
+        foreach ($data as $key => $value) {
+            $result[] = [$key => $value];
         }
 
         return $result;

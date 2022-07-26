@@ -17,7 +17,7 @@ use IQ2i\DataImporter\Processor\BatchProcessorInterface;
 use IQ2i\DataImporter\Processor\ProcessorInterface;
 use IQ2i\DataImporter\Reader\ReaderInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
+use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -26,12 +26,14 @@ class DataImporter
     private ReaderInterface $reader;
     private ProcessorInterface $processor;
     private ?ArchiverInterface $archiver;
+    private Serializer $serializer;
 
-    public function __construct(ReaderInterface $reader, ProcessorInterface $processor, ?ArchiverInterface $archiver = null)
+    public function __construct(ReaderInterface $reader, ProcessorInterface $processor, ?ArchiverInterface $archiver = null, ?Serializer $serializer = null)
     {
         $this->reader = $reader;
         $this->processor = $processor;
         $this->archiver = $archiver;
+        $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
     }
 
     public function execute(): void
@@ -75,14 +77,10 @@ class DataImporter
         if (false === $this->reader->isDenormalizable()) {
             return;
         }
-
-        // init serializer
-        $serializer = new Serializer([new ObjectNormalizer()]);
-
         try {
             // denormalize array data into DTO object
-            $data = $serializer->denormalize($data, $this->reader->getDto());
-        } catch (NotNormalizableValueException $exception) {
+            $data = $this->serializer->denormalize($data, $this->reader->getDto());
+        } catch (\Exception $exception) {
             throw new \InvalidArgumentException('An error occurred while denormalizing data: '.$exception->getMessage());
         }
     }

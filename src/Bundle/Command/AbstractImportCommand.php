@@ -23,6 +23,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Serializer\Serializer;
 
 abstract class AbstractImportCommand extends Command
 {
@@ -55,7 +56,8 @@ abstract class AbstractImportCommand extends Command
             (new DataImporter(
                 $this->getReader($input->getArgument('filename')),
                 $this->getProcessor($input, $output),
-                $this->getArchiver()
+                $this->getArchiver(),
+                $this->getSerializer()
             ))->execute();
         } catch (ItemHandlingException $exception) {
             $io->newLine(2);
@@ -74,10 +76,15 @@ abstract class AbstractImportCommand extends Command
 
     protected function getProcessor(InputInterface $input, OutputInterface $output): ProcessorInterface
     {
-        return new CliProcessor($input, $output, $this->handleItem(), $this->handleBatch());
+        return new CliProcessor($input, $output, $this->handleItem(), $this->handleBatch(), $this->getSerializer());
     }
 
     protected function getArchiver(): ?ArchiverInterface
+    {
+        return null;
+    }
+
+    protected function getSerializer(): ?Serializer
     {
         return null;
     }
