@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+3.2.0
+-----
+
+* add serializer override support
+* make filename argument optional in abstract command
+
 3.1.0
 -----
 
