@@ -26,8 +26,10 @@ use Symfony\Component\Serializer\Serializer;
 class CliProcessor implements BatchProcessorInterface
 {
     private OutputInterface $output;
+    private \Closure $handleBegin;
     private \Closure $handleItem;
     private \Closure $handleBatch;
+    private \Closure $handleEnd;
 
     private SymfonyStyle $io;
     private ProgressBar $progressBar;
@@ -37,18 +39,22 @@ class CliProcessor implements BatchProcessorInterface
 
     private Serializer $serializer;
 
-    private array $errors;
+    private array $errors = [];
 
     public function __construct(
         InputInterface $input,
         OutputInterface $output,
+        callable $handleBegin,
         callable $handleItem,
         callable $handleBatch,
+        callable $handleEnd,
         ?Serializer $serializer = null
     ) {
         $this->output = $output;
+        $this->handleBegin = $handleBegin;
         $this->handleItem = $handleItem;
         $this->handleBatch = $handleBatch;
+        $this->handleEnd = $handleEnd;
 
         $this->io = new SymfonyStyle($input, $output);
         $this->progressBar = new ProgressBar($output);
@@ -68,6 +74,8 @@ class CliProcessor implements BatchProcessorInterface
         if (OutputInterface::VERBOSITY_NORMAL === $this->output->getVerbosity()) {
             $this->progressBar->start();
         }
+
+        ($this->handleBegin)();
     }
 
     public function item(Message $message)
@@ -113,6 +121,8 @@ class CliProcessor implements BatchProcessorInterface
             $this->progressBar->finish();
             $this->io->newLine(2);
         }
+
+        ($this->handleEnd)($this->errors);
 
         if (!empty($this->errors)) {
             $elements = [];

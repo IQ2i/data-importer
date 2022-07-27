@@ -69,14 +69,24 @@ abstract class AbstractImportCommand extends Command
         return Command::SUCCESS;
     }
 
+    protected function handleBegin(): callable
+    {
+        return function () {};
+    }
+
     protected function handleBatch(): callable
     {
         return function () {};
     }
 
+    protected function handleEnd(): callable
+    {
+        return function (array $errors) {};
+    }
+
     protected function getProcessor(InputInterface $input, OutputInterface $output): ProcessorInterface
     {
-        return new CliProcessor($input, $output, $this->handleItem(), $this->handleBatch(), $this->getSerializer());
+        return new CliProcessor($input, $output, $this->handleBegin(), $this->handleItem(), $this->handleBatch(), $this->handleEnd(), $this->getSerializer());
     }
 
     protected function getArchiver(): ?ArchiverInterface
