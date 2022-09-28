@@ -16,7 +16,7 @@ The mandatory parts are the reader and the processor.
 
 ### Reader
 
-The reader describes how DataImporter must to read data in your files.
+The reader describes how DataImporter must read data in your files.
 This library offers you two readers, one for CSV files and another for XML files.
 
 #### CsvReader
@@ -25,18 +25,18 @@ The CsvReader has only one mandatory parameter : the path of the CSV file to imp
 By default, we consider that the CSV file has headers, but you can change this behavior by passing a new context to the CsvReader as third constructor's argument.
 
 ```php
+<?php
+
 use IQ2i\DataImporter\Reader\CsvReader;
 
 // read CSV file with header
 $csvReader = new CsvReader('/path/to/your/csv/file');
 
-// you can specify an other delimiter character
+// you can specify another delimiter character
 $csvReader = new CsvReader(
     '/path/to/your/csv/file',
     null,
-    [
-        CsvReader::DELIMITER_KEY => ';',
-    ]
+    [CsvReader::CONTEXT_DELIMITER => ';']
 );
 ```
 
@@ -47,6 +47,8 @@ It is possible to create your own reader by implementing the [ReaderInterface](R
 Just like the CsvReader, the XmlReader has only one mandatory parameter: the path to the XML file to import.
 
 ```php
+<?php
+
 use IQ2i\DataImporter\Reader\XmlReader;
 
 // read XML file
@@ -82,15 +84,15 @@ For example, take the following XML file:
 If you want to iterate on the `<book>` node, you must give the parent node to the reader:
 
 ```php
+<?php
+
 use IQ2i\DataImporter\Reader\XmlReader;
 
-// you can specify an other delimiter character
 $xmlReader = new XmlReader(
     '/path/to/your/xml/file',
     null,
-    [
-        XmlReader::XPATH_KEY => 'catalog/author/books',
-    ]);
+    [XmlReader::CONTEXT_XPATH => 'catalog/author/books']
+);
 ```
 
 ### DTO
@@ -165,6 +167,8 @@ class Book
 And add the DTO in your reader's constructor:
 
 ```php
+<?php
+
 use App\DTO\Book;
 use IQ2i\DataImporter\Reader\CsvReader;
 
@@ -288,6 +292,8 @@ class ArticleProcessor implements BatchProcessorInterface
 Now that you have a reader and a processor, you can set up the DataImporter:
 
 ```php
+<?php
+
 use IQ2i\DataImporter\DataImporter;
 
 $dataImporter = new DataImporter(
@@ -310,6 +316,8 @@ The archiver provided is the DateTimeArchiver which will archive the files with 
 The setup is easy:
 
 ```php
+<?php
+
 use IQ2i\DataImporter\Archiver\DateTimeArchiver;
 use IQ2i\DataImporter\DataImporter;
 
