@@ -15,6 +15,7 @@ use IQ2i\DataImporter\Archiver\ArchiverInterface;
 use IQ2i\DataImporter\Bundle\Exception\ItemHandlingException;
 use IQ2i\DataImporter\Bundle\Processor\CliProcessor;
 use IQ2i\DataImporter\DataImporter;
+use IQ2i\DataImporter\Exchange\Message;
 use IQ2i\DataImporter\Processor\ProcessorInterface;
 use IQ2i\DataImporter\Reader\ReaderInterface;
 use Symfony\Component\Console\Command\Command;
@@ -71,17 +72,17 @@ abstract class AbstractImportCommand extends Command
 
     protected function handleBegin(): callable
     {
-        return function () {};
+        return function (Message $message) {};
     }
 
     protected function handleBatch(): callable
     {
-        return function () {};
+        return function (Message $message) {};
     }
 
     protected function handleEnd(): callable
     {
-        return function (array $errors) {};
+        return function (Message $message, array $errors) {};
     }
 
     protected function getProcessor(InputInterface $input, OutputInterface $output): ProcessorInterface

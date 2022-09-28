@@ -21,7 +21,7 @@ class TestBatchProcessor implements BatchProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function begin(): void
+    public function begin(Message $message): void
     {
     }
 
@@ -35,14 +35,14 @@ class TestBatchProcessor implements BatchProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function end(): void
+    public function end(Message $message): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function batch()
+    public function batch(Message $message)
     {
     }
 

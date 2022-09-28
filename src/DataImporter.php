@@ -38,48 +38,33 @@ class DataImporter
 
     public function execute(): void
     {
-        // callback before file processing
-        $this->processor->begin();
+        $this->processor->begin(MessageFactory::create($this->reader));
 
-        // process file
         foreach ($this->reader as $data) {
-            // serialize data if needed
-            $this->serializeData($data);
+            $this->processor->item(MessageFactory::create(
+                $this->reader,
+                $this->reader->isDenormalizable() ? $this->serializeData($data) : $data
+            ));
 
-            // create message
-            $message = MessageFactory::create($this->reader, $data);
-
-            // process message
-            $this->processor->item($message);
-
-            // call batch action
-            if (
-                $this->processor instanceof BatchProcessorInterface
-                && (
-                    0 === $message->getCurrentIteration() % $this->processor->getBatchSize()
-                    || $message->getCurrentIteration() === $message->getTotalIteration()
-                )
-            ) {
-                // callback at the end of batch
-                $this->processor->batch();
+            if ($this->processor instanceof BatchProcessorInterface && (
+                0 === $this->reader->index() % $this->processor->getBatchSize() || $this->reader->index() === $this->reader->count()
+            )) {
+                $this->processor->batch(MessageFactory::create($this->reader));
             }
         }
 
-        // callback before file processing
-        $this->processor->end();
+        $this->processor->end(MessageFactory::create($this->reader));
 
-        // archive file
         $this->doArchive();
     }
 
-    private function serializeData(array &$data): void
+    /**
+     * @return mixed
+     */
+    private function serializeData(array $data)
     {
-        if (false === $this->reader->isDenormalizable()) {
-            return;
-        }
         try {
-            // denormalize array data into DTO object
-            $data = $this->serializer->denormalize($data, $this->reader->getDto());
+            return $this->serializer->denormalize($data, $this->reader->getDto());
         } catch (\Exception $exception) {
             throw new \InvalidArgumentException('An error occurred while denormalizing data: '.$exception->getMessage());
         }

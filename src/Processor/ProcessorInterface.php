@@ -16,19 +16,23 @@ use IQ2i\DataImporter\Exchange\Message;
 interface ProcessorInterface
 {
     /**
-     * Method called at the begin of the file processing.
+     * Method called at the beginning of the file processing.
+     *
+     * @param Message $message Object containing information about the file being processed (without data)
      */
-    public function begin();
+    public function begin(Message $message);
 
     /**
      * Process one line.
      *
-     * @param Message $message Object containing information about the file being processed
+     * @param Message $message Object containing information about the file being processed (with data)
      */
     public function item(Message $message);
 
     /**
      * Method called at the end of the file processing.
+     *
+     * @param Message $message Object containing information about the file being processed (without data)
      */
-    public function end();
+    public function end(Message $message);
 }

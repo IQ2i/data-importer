@@ -19,7 +19,7 @@ class TestItemProcessor implements ProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function begin(): void
+    public function begin(Message $message): void
     {
     }
 
@@ -33,7 +33,7 @@ class TestItemProcessor implements ProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function end(): void
+    public function end(Message $message): void
     {
     }
 }

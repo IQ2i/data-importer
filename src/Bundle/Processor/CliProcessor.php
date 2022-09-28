@@ -69,13 +69,13 @@ class CliProcessor implements BatchProcessorInterface
         $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
     }
 
-    public function begin()
+    public function begin(Message $message)
     {
         if (OutputInterface::VERBOSITY_NORMAL === $this->output->getVerbosity()) {
             $this->progressBar->start();
         }
 
-        ($this->handleBegin)();
+        ($this->handleBegin)($message);
     }
 
     public function item(Message $message)
@@ -115,14 +115,14 @@ class CliProcessor implements BatchProcessorInterface
         }
     }
 
-    public function end()
+    public function end(Message $message)
     {
         if (OutputInterface::VERBOSITY_NORMAL === $this->output->getVerbosity()) {
             $this->progressBar->finish();
             $this->io->newLine(2);
         }
 
-        ($this->handleEnd)($this->errors);
+        ($this->handleEnd)($message, $this->errors);
 
         if (!empty($this->errors)) {
             $elements = [];
@@ -134,9 +134,9 @@ class CliProcessor implements BatchProcessorInterface
         }
     }
 
-    public function batch()
+    public function batch(Message $message)
     {
-        ($this->handleBatch)();
+        ($this->handleBatch)($message);
     }
 
     public function getBatchSize()
@@ -144,14 +144,20 @@ class CliProcessor implements BatchProcessorInterface
         return $this->batchSize;
     }
 
+    /**
+     * @param mixed|null $data
+     */
     private function formatDataToDebug($data): array
     {
-        $result = [];
+        if (null === $data) {
+            return [];
+        }
 
         if (\is_object($data)) {
             $data = $this->serializer->normalize($data);
         }
 
+        $result = [];
         foreach ($data as $key => $value) {
             $result[] = [$key => $value];
         }

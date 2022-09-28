@@ -17,10 +17,10 @@ class Message
     private string $filePath;
     private int $currentIteration;
     private int $totalIteration;
-    /** @var mixed */
+    /** @var mixed|null */
     private $data;
 
-    public function __construct(string $fileName, string $filePath, int $currentIteration, int $totalIteration, $data)
+    public function __construct(string $fileName, string $filePath, int $currentIteration, int $totalIteration, $data = null)
     {
         $this->fileName = $fileName;
         $this->filePath = $filePath;
@@ -50,7 +50,7 @@ class Message
     }
 
     /**
-     * @return mixed
+     * @return mixed|null
      */
     public function getData()
     {

@@ -11,12 +11,16 @@
 
 namespace IQ2i\DataImporter\Processor;
 
+use IQ2i\DataImporter\Exchange\Message;
+
 interface BatchProcessorInterface extends ProcessorInterface
 {
     /**
      * Action to execute at the end of a batch.
+     *
+     * @param Message $message Object containing information about the file being processed (without data)
      */
-    public function batch();
+    public function batch(Message $message);
 
     /**
      * Action to execute at the end of a batch.

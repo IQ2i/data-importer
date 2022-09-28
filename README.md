@@ -203,7 +203,7 @@ class ArticleProcessor implements ProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function begin(): void
+    public function begin(Message $message): void
     {
         // Do something before process file content
     }
@@ -219,7 +219,7 @@ class ArticleProcessor implements ProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function end(): void
+    public function end(Message $message): void
     {
         // Do something after process file content
     }
@@ -247,7 +247,7 @@ class ArticleProcessor implements BatchProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function begin(): void
+    public function begin(Message $message): void
     {
         // Do something before process file content
     }
@@ -263,7 +263,7 @@ class ArticleProcessor implements BatchProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function batch(): void
+    public function batch(Message $message): void
     {
         // Do something at the end of a batch
         // ex: $this->entityManager->flush()
@@ -272,7 +272,7 @@ class ArticleProcessor implements BatchProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function end(): void
+    public function end(Message $message): void
     {
         // Do something after process file content
     }

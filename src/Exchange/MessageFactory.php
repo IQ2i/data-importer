@@ -16,9 +16,9 @@ use IQ2i\DataImporter\Reader\ReaderInterface;
 class MessageFactory
 {
     /**
-     * @param mixed $data
+     * @param mixed|null $data
      */
-    public static function create(ReaderInterface $reader, $data): Message
+    public static function create(ReaderInterface $reader, $data = null): Message
     {
         return new Message(
             $reader->getFile()->getFilename(),
