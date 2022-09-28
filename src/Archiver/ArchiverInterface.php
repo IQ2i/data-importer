@@ -20,6 +20,8 @@ interface ArchiverInterface
 
     /**
      * Archive file after process.
+     *
+     * @return string Path of archived file
      */
-    public function archive(\SplFileInfo $file): void;
+    public function archive(\SplFileInfo $file): string;
 }

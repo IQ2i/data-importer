@@ -19,14 +19,16 @@ class Message
     private int $totalIteration;
     /** @var mixed|null */
     private $data;
+    private ?string $archiveFilePath;
 
-    public function __construct(string $fileName, string $filePath, int $currentIteration, int $totalIteration, $data = null)
+    public function __construct(string $fileName, string $filePath, int $currentIteration, int $totalIteration, $data = null, ?string $archiveFilePath = null)
     {
         $this->fileName = $fileName;
         $this->filePath = $filePath;
         $this->currentIteration = $currentIteration;
         $this->totalIteration = $totalIteration;
         $this->data = $data;
+        $this->archiveFilePath = $archiveFilePath;
     }
 
     public function getFileName(): string
@@ -55,5 +57,10 @@ class Message
     public function getData()
     {
         return $this->data;
+    }
+
+    public function getArchiveFilePath(): ?string
+    {
+        return $this->archiveFilePath;
     }
 }

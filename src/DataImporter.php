@@ -53,9 +53,12 @@ class DataImporter
             }
         }
 
-        $this->processor->end(MessageFactory::create($this->reader));
+        $archivedFilePath = null;
+        if (null !== $this->archiver) {
+            $archivedFilePath = $this->doArchive();
+        }
 
-        $this->doArchive();
+        $this->processor->end(MessageFactory::create($this->reader, null, $archivedFilePath));
     }
 
     /**
@@ -70,14 +73,10 @@ class DataImporter
         }
     }
 
-    private function doArchive(): void
+    private function doArchive(): string
     {
-        if (null === $this->archiver) {
-            return;
-        }
-
         try {
-            $this->archiver->archive($this->reader->getFile());
+            return $this->archiver->archive($this->reader->getFile());
         } catch (IOException $exception) {
             throw new IOException('An error occurred while archiving file: '.$exception->getMessage());
         }

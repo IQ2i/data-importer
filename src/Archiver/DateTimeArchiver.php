@@ -22,24 +22,21 @@ class DateTimeArchiver implements ArchiverInterface
         $this->rootPath = rtrim($rootPath, '/');
     }
 
-    public function archive(\SplFileInfo $file): void
+    public function archive(\SplFileInfo $file): string
     {
-        // init filesystem
-        $filesystem = new Filesystem();
-
-        // get current DateTime
-        $now = new \DateTime();
-
-        // init full archive path
+        $now = $this->now();
         $archivePath = $this->rootPath.'/'.$now->format('Y/m/d');
+        $archiveFileName = $archivePath.'/'.$now->format('YmdHis').'_'.$file->getFilename();
 
-        // create archive path
+        $filesystem = new Filesystem();
         $filesystem->mkdir($archivePath);
+        $filesystem->rename($file->getPathname(), $archiveFileName);
 
-        // init new filename
-        $newFilename = $now->format('YmdHis').'_'.$file->getFilename();
+        return $archiveFileName;
+    }
 
-        // move file to archive
-        $filesystem->rename($file->getPathname(), $archivePath.'/'.$newFilename);
+    public function now(): \DateTimeInterface
+    {
+        return new \DateTime();
     }
 }

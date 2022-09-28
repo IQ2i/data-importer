@@ -36,33 +36,16 @@ class DateTimeArchiverTest extends TestCase
 
     public function testArchive()
     {
-        // create archiver
-        $archiver = new DateTimeArchiver($this->fs->getChild('archives')->url());
+        $archiverMock = $this->getMockBuilder(DateTimeArchiver::class)
+            ->setConstructorArgs([$this->fs->getChild('archives')->url()])
+            ->onlyMethods(['now'])
+            ->getMock();
+        $archiverMock
+            ->method('now')
+            ->willReturn(new \DateTime('2016-09-10 07:24:00'));
 
-        // init datetime
-        $now = new \DateTime();
+        $archiveFilePath = $archiverMock->archive(new \SplFileObject($this->fs->getChild('import')->getChild('books.csv')->url()));
 
-        // archive file
-        $archiver->archive(new \SplFileObject($this->fs->getChild('import')->getChild('books.csv')->url()));
-
-        // test file move
-        $this->assertTrue($this->fs
-            ->getChild('archives')->hasChild($now->format('Y'))
-        );
-        $this->assertTrue($this->fs
-            ->getChild('archives')
-            ->getChild($now->format('Y'))->hasChild($now->format('m'))
-        );
-        $this->assertTrue($this->fs
-            ->getChild('archives')
-            ->getChild($now->format('Y'))
-            ->getChild($now->format('m'))->hasChild($now->format('d'))
-        );
-        $this->assertTrue($this->fs
-            ->getChild('archives')
-            ->getChild($now->format('Y'))
-            ->getChild($now->format('m'))
-            ->getChild($now->format('d'))->hasChildren()
-        );
+        $this->assertEquals($this->fs->getChild('archives/2016/09/10/20160910072400_books.csv')->url(), $archiveFilePath);
     }
 }
