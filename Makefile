@@ -2,7 +2,7 @@
 DOCKER_COMP = docker-compose
 
 # Docker containers
-PHP_CONT = $(DOCKER_COMP) exec php
+PHP_CONT = $(DOCKER_COMP) run --rm php
 
 # Executables
 PHP = $(PHP_CONT) php
@@ -18,14 +18,6 @@ help: ## Outputs this help screen
 ## —— Docker 🐳 ————————————————————————————————————————————————————————————————
 build: ## Builds the Docker images
 	@$(DOCKER_COMP) build --pull --no-cache
-
-up: ## Start the docker hub in detached mode (no logs)
-	@$(DOCKER_COMP) up --detach
-
-start: build up ## Build and start the containers
-
-down: ## Stop the docker hub
-	@$(DOCKER_COMP) down --remove-orphans
 
 logs: ## Show live logs
 	@$(DOCKER_COMP) logs --tail=0 --follow
