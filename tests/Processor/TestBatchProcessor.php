@@ -18,6 +18,9 @@ use IQ2i\DataImporter\Processor\BatchProcessorInterface;
 
 class TestBatchProcessor implements BatchProcessorInterface
 {
+    /**
+     * @var int
+     */
     public const BATCH_SIZE = 2;
 
     /**

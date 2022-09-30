@@ -16,11 +16,16 @@ namespace IQ2i\DataImporter\Exchange;
 class Message
 {
     private string $fileName;
+
     private string $filePath;
+
     private int $currentIteration;
+
     private int $totalIteration;
+
     /** @var mixed|null */
     private $data;
+
     private ?string $archiveFilePath;
 
     public function __construct(string $fileName, string $filePath, int $currentIteration, int $totalIteration, $data = null, ?string $archiveFilePath = null)

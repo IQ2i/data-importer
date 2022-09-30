@@ -31,6 +31,7 @@ use Symfony\Component\Serializer\Serializer;
 abstract class AbstractImportCommand extends Command
 {
     protected InputInterface $input;
+
     protected OutputInterface $output;
 
     abstract protected function handleItem(): callable;
@@ -62,11 +63,11 @@ abstract class AbstractImportCommand extends Command
                 $this->getArchiver(),
                 $this->getSerializer()
             ))->execute();
-        } catch (ItemHandlingException $exception) {
+        } catch (ItemHandlingException $itemHandlingException) {
             $io->newLine(2);
-            $io->error($exception->getMessage());
+            $io->error($itemHandlingException->getMessage());
 
-            return $exception->getCode();
+            return $itemHandlingException->getCode();
         }
 
         return Command::SUCCESS;
@@ -74,17 +75,20 @@ abstract class AbstractImportCommand extends Command
 
     protected function handleBegin(): callable
     {
-        return function (Message $message) {};
+        return static function (Message $message) {
+        };
     }
 
     protected function handleBatch(): callable
     {
-        return function (Message $message) {};
+        return static function (Message $message) {
+        };
     }
 
     protected function handleEnd(): callable
     {
-        return function (Message $message, array $errors) {};
+        return static function (Message $message, array $errors) {
+        };
     }
 
     protected function getProcessor(InputInterface $input, OutputInterface $output): ProcessorInterface

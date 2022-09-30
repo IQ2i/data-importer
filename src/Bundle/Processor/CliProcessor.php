@@ -28,15 +28,23 @@ use Symfony\Component\Serializer\Serializer;
 class CliProcessor implements BatchProcessorInterface
 {
     private OutputInterface $output;
+
     private \Closure $handleBegin;
+
     private \Closure $handleItem;
+
     private \Closure $handleBatch;
+
     private \Closure $handleEnd;
 
     private SymfonyStyle $io;
+
     private ProgressBar $progressBar;
+
     private bool $stepByStep;
+
     private bool $pauseOnError;
+
     private int $batchSize;
 
     private Serializer $serializer;
@@ -65,6 +73,7 @@ class CliProcessor implements BatchProcessorInterface
         if ($this->stepByStep && $output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
             $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
         }
+
         $this->pauseOnError = (bool) $input->getOption('pause-on-error');
         $this->batchSize = (int) $input->getOption('batch-size');
 
@@ -109,11 +118,9 @@ class CliProcessor implements BatchProcessorInterface
                 break;
         }
 
-        if ($this->stepByStep && $message->getCurrentIteration() < $message->getTotalIteration()) {
-            if (!$this->io->confirm('Continue?')) {
-                $this->io->error('Import cancelled');
-                exit;
-            }
+        if ($this->stepByStep && $message->getCurrentIteration() < $message->getTotalIteration() && !$this->io->confirm('Continue?')) {
+            $this->io->error('Import cancelled');
+            exit;
         }
     }
 
@@ -131,6 +138,7 @@ class CliProcessor implements BatchProcessorInterface
             foreach ($this->errors as $key => $value) {
                 $elements[] = \sprintf('Line #%d: %s', $key, $value);
             }
+
             $this->io->error('Errors occured during import:');
             $this->io->listing($elements);
         }

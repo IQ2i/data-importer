@@ -15,12 +15,19 @@ namespace IQ2i\DataImporter\Reader;
 
 class XmlReader implements ReaderInterface
 {
+    /**
+     * @var string
+     */
     public const CONTEXT_XPATH = 'xml_xpath';
 
     private ?string $dto;
+
     private \SplFileInfo $file;
+
     private \SimpleXMLIterator $iterator;
+
     private int $index = 1;
+
     private array $defaultContext = [
         self::CONTEXT_XPATH => null,
     ];
@@ -172,11 +179,7 @@ class XmlReader implements ReaderInterface
         $result = [];
 
         foreach ((array) $iterator as $index => $node) {
-            if (\is_object($node)) {
-                $result[$index] = self::transformToArray($node);
-            } else {
-                $result[$index] = $node;
-            }
+            $result[$index] = \is_object($node) ? self::transformToArray($node) : $node;
         }
 
         return $result;

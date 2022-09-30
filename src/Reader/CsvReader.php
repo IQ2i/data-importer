@@ -15,17 +15,41 @@ namespace IQ2i\DataImporter\Reader;
 
 class CsvReader implements ReaderInterface
 {
+    /**
+     * @var string
+     */
     public const CONTEXT_DELIMITER = 'csv_delimiter';
+
+    /**
+     * @var string
+     */
     public const CONTEXT_ENCLOSURE = 'csv_enclosure';
+
+    /**
+     * @var string
+     */
     public const CONTEXT_ESCAPE_CHAR = 'csv_escape_char';
+
+    /**
+     * @var string
+     */
     public const CONTEXT_HEADERS = 'csv_headers';
+
+    /**
+     * @var string
+     */
     public const CONTEXT_NO_HEADERS = 'no_headers';
 
     private ?string $dto;
+
     private \SplFileInfo $file;
+
     private \SplFileObject $iterator;
+
     private int $count = 0;
+
     private int $index = 1;
+
     private array $defaultContext = [
         self::CONTEXT_DELIMITER => ',',
         self::CONTEXT_ENCLOSURE => '"',
@@ -81,6 +105,7 @@ class CsvReader implements ReaderInterface
             ++$this->count;
             $this->next();
         }
+
         $this->rewind();
     }
 
@@ -129,7 +154,7 @@ class CsvReader implements ReaderInterface
             return $this->iterator->current();
         }
 
-        if (\count($this->defaultContext[self::CONTEXT_HEADERS]) === \count($this->iterator->current())) {
+        if ((\is_countable($this->defaultContext[self::CONTEXT_HEADERS]) ? \count($this->defaultContext[self::CONTEXT_HEADERS]) : 0) === (\is_countable($this->iterator->current()) ? \count($this->iterator->current()) : 0)) {
             return \array_combine($this->defaultContext[self::CONTEXT_HEADERS], $this->iterator->current());
         }
 

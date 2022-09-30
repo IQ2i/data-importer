@@ -29,10 +29,15 @@ php: ## Connect to the PHP FPM container
 install: ## Install project
 	@$(PHP_CONT) composer install
 
-## —— Coding standards ✨ ——————————————————————————————————————————————————————
+## —— Quality ✨ ——————————————————————————————————————————————————————
+quality: static rector
+
 static: ## Run static analysis tools
-	$(PHP) -d memory_limit=-1 vendor/bin/phpstan analyse -c phpstan.neon.dist
+	$(PHP) -d memory_limit=-1 vendor/bin/phpstan analyse
 	$(PHP) -d memory_limit=-1 vendor/bin/php-cs-fixer fix
+
+rector: ## Run rector
+	$(PHP) -d memory_limit=-1 vendor/bin/rector
 
 ## —— Testing 🚣 ————————————————————————————————————————————————————————————————
 test: ## Run tests

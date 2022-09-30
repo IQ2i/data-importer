@@ -48,7 +48,7 @@ class ImportCommandTest extends TestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Start importing data', $output);
         $this->assertStringContainsString('author        Gambardella, Matthew', $output);
-        $this->assertStringContainsString('title         XML Developer\'s Guide', $output);
+        $this->assertStringContainsString("title         XML Developer's Guide", $output);
         $this->assertStringContainsString('genre         Computer', $output);
         $this->assertStringContainsString('price         44.95', $output);
         $this->assertStringContainsString('description   An in-depth look at creating applications with XML.', $output);

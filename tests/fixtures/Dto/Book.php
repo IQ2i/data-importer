@@ -16,9 +16,13 @@ namespace IQ2i\DataImporter\Tests\fixtures\Dto;
 class Book
 {
     private $author;
+
     private $title;
+
     private $genre;
+
     private $price;
+
     private $description;
 
     public function getAuthor(): string

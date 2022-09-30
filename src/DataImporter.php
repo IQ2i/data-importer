@@ -26,8 +26,11 @@ use Symfony\Component\Serializer\Serializer;
 class DataImporter
 {
     private ReaderInterface $reader;
+
     private ProcessorInterface $processor;
+
     private ?ArchiverInterface $archiver;
+
     private Serializer $serializer;
 
     public function __construct(ReaderInterface $reader, ProcessorInterface $processor, ?ArchiverInterface $archiver = null, ?Serializer $serializer = null)
@@ -71,7 +74,7 @@ class DataImporter
         try {
             return $this->serializer->denormalize($data, $this->reader->getDto());
         } catch (\Exception $exception) {
-            throw new \InvalidArgumentException('An error occurred while denormalizing data: '.$exception->getMessage());
+            throw new \InvalidArgumentException('An error occurred while denormalizing data: '.$exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
@@ -79,8 +82,8 @@ class DataImporter
     {
         try {
             return $this->archiver->archive($this->reader->getFile());
-        } catch (IOException $exception) {
-            throw new IOException('An error occurred while archiving file: '.$exception->getMessage());
+        } catch (IOException $ioException) {
+            throw new IOException('An error occurred while archiving file: '.$ioException->getMessage());
         }
     }
 }

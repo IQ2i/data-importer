@@ -24,7 +24,8 @@ class BookImportCommand extends AbstractImportCommand
 
     protected function handleItem(): callable
     {
-        return function (Message $message) {};
+        return static function (Message $message) {
+        };
     }
 
     protected function getReader(?string $filename = null): ReaderInterface

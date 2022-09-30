@@ -41,5 +41,8 @@ jobs:
       - name: Test PHPStan
         run: ./vendor/bin/phpstan analyse
 
+      - name: Test Rector
+        run: ./vendor/bin/rector process --ansi
+
       - name: Test PHPUnit
         run: ./vendor/bin/phpunit
