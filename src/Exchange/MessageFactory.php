@@ -15,7 +15,7 @@ namespace IQ2i\DataImporter\Exchange;
 
 use IQ2i\DataImporter\Reader\ReaderInterface;
 
-class MessageFactory
+final class MessageFactory
 {
     public static function create(
         ReaderInterface $reader,
