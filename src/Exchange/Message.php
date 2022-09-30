@@ -15,27 +15,14 @@ namespace IQ2i\DataImporter\Exchange;
 
 class Message
 {
-    private string $fileName;
-
-    private string $filePath;
-
-    private int $currentIteration;
-
-    private int $totalIteration;
-
-    /** @var mixed|null */
-    private $data;
-
-    private ?string $archiveFilePath;
-
-    public function __construct(string $fileName, string $filePath, int $currentIteration, int $totalIteration, $data = null, ?string $archiveFilePath = null)
-    {
-        $this->fileName = $fileName;
-        $this->filePath = $filePath;
-        $this->currentIteration = $currentIteration;
-        $this->totalIteration = $totalIteration;
-        $this->data = $data;
-        $this->archiveFilePath = $archiveFilePath;
+    public function __construct(
+        private string $fileName,
+        private string $filePath,
+        private int $currentIteration,
+        private int $totalIteration,
+        private mixed $data = null,
+        private ?string $archiveFilePath = null,
+    ) {
     }
 
     public function getFileName(): string
@@ -58,10 +45,7 @@ class Message
         return $this->totalIteration;
     }
 
-    /**
-     * @return mixed|null
-     */
-    public function getData()
+    public function getData(): mixed
     {
         return $this->data;
     }

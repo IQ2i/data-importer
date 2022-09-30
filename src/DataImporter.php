@@ -25,19 +25,14 @@ use Symfony\Component\Serializer\Serializer;
 
 class DataImporter
 {
-    private ReaderInterface $reader;
-
-    private ProcessorInterface $processor;
-
-    private ?ArchiverInterface $archiver;
-
     private Serializer $serializer;
 
-    public function __construct(ReaderInterface $reader, ProcessorInterface $processor, ?ArchiverInterface $archiver = null, ?Serializer $serializer = null)
-    {
-        $this->reader = $reader;
-        $this->processor = $processor;
-        $this->archiver = $archiver;
+    public function __construct(
+        private ReaderInterface $reader,
+        private ProcessorInterface $processor,
+        private ?ArchiverInterface $archiver = null,
+        ?Serializer $serializer = null,
+    ) {
         $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
     }
 
@@ -66,10 +61,7 @@ class DataImporter
         $this->processor->end(MessageFactory::create($this->reader, null, $archivedFilePath));
     }
 
-    /**
-     * @return mixed
-     */
-    private function serializeData(array $data)
+    private function serializeData(array $data): mixed
     {
         try {
             return $this->serializer->denormalize($data, $this->reader->getDto());

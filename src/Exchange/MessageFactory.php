@@ -17,11 +17,11 @@ use IQ2i\DataImporter\Reader\ReaderInterface;
 
 class MessageFactory
 {
-    /**
-     * @param mixed|null $data
-     */
-    public static function create(ReaderInterface $reader, $data = null, ?string $archiveFilePath = null): Message
-    {
+    public static function create(
+        ReaderInterface $reader,
+        mixed $data = null,
+        ?string $archiveFilePath = null,
+    ): Message {
         return new Message(
             $reader->getFile()->getFilename(),
             $reader->getFile()->getPathname(),

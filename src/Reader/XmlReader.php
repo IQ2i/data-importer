@@ -20,8 +20,6 @@ class XmlReader implements ReaderInterface
      */
     public const CONTEXT_XPATH = 'xml_xpath';
 
-    private ?string $dto;
-
     private \SplFileInfo $file;
 
     private \SimpleXMLIterator $iterator;
@@ -32,8 +30,11 @@ class XmlReader implements ReaderInterface
         self::CONTEXT_XPATH => null,
     ];
 
-    public function __construct(string $filePath, ?string $dto = null, array $defaultContext = [])
-    {
+    public function __construct(
+        string $filePath,
+        private ?string $dto = null,
+        array $defaultContext = [],
+    ) {
         // create a new SplInfo from path
         $this->file = new \SplFileInfo($filePath);
 
@@ -74,9 +75,6 @@ class XmlReader implements ReaderInterface
 
             $this->iterator = new \SimpleXMLIterator($element->asXML());
         }
-
-        // set dto
-        $this->dto = $dto;
 
         // must rewind before use
         $this->rewind();
@@ -137,10 +135,8 @@ class XmlReader implements ReaderInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @return mixed
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->iterator->key();
     }

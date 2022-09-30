@@ -27,16 +27,6 @@ use Symfony\Component\Serializer\Serializer;
 
 class CliProcessor implements BatchProcessorInterface
 {
-    private OutputInterface $output;
-
-    private \Closure $handleBegin;
-
-    private \Closure $handleItem;
-
-    private \Closure $handleBatch;
-
-    private \Closure $handleEnd;
-
     private SymfonyStyle $io;
 
     private ProgressBar $progressBar;
@@ -52,30 +42,24 @@ class CliProcessor implements BatchProcessorInterface
     private array $errors = [];
 
     public function __construct(
-        InputInterface $input,
-        OutputInterface $output,
-        callable $handleBegin,
-        callable $handleItem,
-        callable $handleBatch,
-        callable $handleEnd,
-        ?Serializer $serializer = null
+        private InputInterface $input,
+        private OutputInterface $output,
+        private \Closure $handleBegin,
+        private \Closure $handleItem,
+        private \Closure $handleBatch,
+        private \Closure $handleEnd,
+        ?Serializer $serializer = null,
     ) {
-        $this->output = $output;
-        $this->handleBegin = $handleBegin;
-        $this->handleItem = $handleItem;
-        $this->handleBatch = $handleBatch;
-        $this->handleEnd = $handleEnd;
+        $this->io = new SymfonyStyle($this->input, $this->output);
+        $this->progressBar = new ProgressBar($this->output);
 
-        $this->io = new SymfonyStyle($input, $output);
-        $this->progressBar = new ProgressBar($output);
-
-        $this->stepByStep = (bool) $input->getOption('step');
-        if ($this->stepByStep && $output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
+        $this->stepByStep = (bool) $this->input->getOption('step');
+        if ($this->stepByStep && $this->output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
+            $this->output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
         }
 
-        $this->pauseOnError = (bool) $input->getOption('pause-on-error');
-        $this->batchSize = (int) $input->getOption('batch-size');
+        $this->pauseOnError = (bool) $this->input->getOption('pause-on-error');
+        $this->batchSize = (int) $this->input->getOption('batch-size');
 
         $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
     }
@@ -154,10 +138,7 @@ class CliProcessor implements BatchProcessorInterface
         return $this->batchSize;
     }
 
-    /**
-     * @param mixed|null $data
-     */
-    private function formatDataToDebug($data): array
+    private function formatDataToDebug(mixed $data): array
     {
         if (null === $data) {
             return [];

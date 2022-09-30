@@ -40,8 +40,6 @@ class CsvReader implements ReaderInterface
      */
     public const CONTEXT_NO_HEADERS = 'no_headers';
 
-    private ?string $dto;
-
     private \SplFileInfo $file;
 
     private \SplFileObject $iterator;
@@ -58,8 +56,11 @@ class CsvReader implements ReaderInterface
         self::CONTEXT_NO_HEADERS => false,
     ];
 
-    public function __construct(string $filePath, ?string $dto = null, array $defaultContext = [])
-    {
+    public function __construct(
+        string $filePath,
+        private ?string $dto = null,
+        array $defaultContext = [],
+    ) {
         // create a new SplInfo from path
         $this->file = new \SplFileInfo($filePath);
 
@@ -95,9 +96,6 @@ class CsvReader implements ReaderInterface
             $this->rewind();
             $this->defaultContext[self::CONTEXT_HEADERS] = $this->iterator->current();
         }
-
-        // set dto
-        $this->dto = $dto;
 
         // update counter
         $this->rewind();
@@ -172,10 +170,8 @@ class CsvReader implements ReaderInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @return mixed
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->iterator->key();
     }
