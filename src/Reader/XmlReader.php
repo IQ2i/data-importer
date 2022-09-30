@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the DataImporter package.
  *
@@ -34,7 +36,7 @@ class XmlReader implements ReaderInterface
         }
 
         // update default context
-        $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
+        $this->defaultContext = \array_merge($this->defaultContext, $defaultContext);
 
         if (null === $this->defaultContext[self::CONTEXT_XPATH]) {
             $this->iterator = new \SimpleXMLIterator($this->file->getPathname(), 0, true);
@@ -43,10 +45,10 @@ class XmlReader implements ReaderInterface
             $element = new \SimpleXMLElement($this->file->getPathname(), 0, true);
 
             // explode string into array
-            $nodes = explode('/', $this->defaultContext[self::CONTEXT_XPATH]);
+            $nodes = \explode('/', $this->defaultContext[self::CONTEXT_XPATH]);
 
             // get first node (current element node)
-            $rootNode = array_shift($nodes);
+            $rootNode = \array_shift($nodes);
 
             if ($rootNode !== $element->getName()) {
                 throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::CONTEXT_XPATH].'" is incorrect.');

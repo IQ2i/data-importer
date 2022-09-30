@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the DataImporter package.
  *
@@ -31,9 +33,9 @@ class DataImporterTest extends TestCase
     {
         $this->fs = vfsStream::setup();
 
-        $this->fs->addChild(vfsStream::newFile('books.csv', 0755)->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
-        $this->fs->addChild(vfsStream::newFile('books.xml', 0755)->withContent(file_get_contents(__DIR__.'/fixtures/xml/books_with_xpath.xml')));
-        $this->fs->addChild(vfsStream::newFile('books_unreadable.csv', 0111)->withContent(file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
+        $this->fs->addChild(vfsStream::newFile('books.csv', 0755)->withContent(\file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
+        $this->fs->addChild(vfsStream::newFile('books.xml', 0755)->withContent(\file_get_contents(__DIR__.'/fixtures/xml/books_with_xpath.xml')));
+        $this->fs->addChild(vfsStream::newFile('books_unreadable.csv', 0111)->withContent(\file_get_contents(__DIR__.'/fixtures/csv/books_with_headers.csv')));
 
         $this->fs->addChild(vfsStream::newDirectory('archive', 0755));
         $this->fs->addChild(vfsStream::newDirectory('archive_unreadable', 0111));

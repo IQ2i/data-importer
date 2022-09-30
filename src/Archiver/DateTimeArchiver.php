@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the DataImporter package.
  *
@@ -19,7 +21,7 @@ class DateTimeArchiver implements ArchiverInterface
 
     public function __construct(string $rootPath)
     {
-        $this->rootPath = rtrim($rootPath, '/');
+        $this->rootPath = \rtrim($rootPath, '/');
     }
 
     public function archive(\SplFileInfo $file): string

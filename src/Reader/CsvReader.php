@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the DataImporter package.
  *
@@ -46,7 +48,7 @@ class CsvReader implements ReaderInterface
         $this->iterator = $this->file->openFile();
 
         // update default context
-        $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
+        $this->defaultContext = \array_merge($this->defaultContext, $defaultContext);
         if (\PHP_VERSION_ID < 70400 && '' === $this->defaultContext[self::CONTEXT_ESCAPE_CHAR]) {
             $this->defaultContext[self::CONTEXT_ESCAPE_CHAR] = '\\';
         }
@@ -128,7 +130,7 @@ class CsvReader implements ReaderInterface
         }
 
         if (\count($this->defaultContext[self::CONTEXT_HEADERS]) === \count($this->iterator->current())) {
-            return array_combine($this->defaultContext[self::CONTEXT_HEADERS], $this->iterator->current());
+            return \array_combine($this->defaultContext[self::CONTEXT_HEADERS], $this->iterator->current());
         }
 
         return [];

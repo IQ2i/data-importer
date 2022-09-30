@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the DataImporter package.
  *
@@ -42,7 +44,7 @@ class XmlReaderTest extends TestCase
         $this->assertFalse($reader->isDenormalizable());
 
         // test count
-        $this->assertEquals(2, \count($reader));
+        $this->assertCount(2, $reader);
 
         // test index
         $this->assertEquals(1, $reader->index());
@@ -51,7 +53,7 @@ class XmlReaderTest extends TestCase
         // test headers
         $this->assertEquals(
             ['author', 'title', 'genre', 'price', 'description'],
-            array_keys($reader->current())
+            \array_keys($reader->current())
         );
         $this->assertArrayHasKey('author', $reader->current());
         $this->assertNotNull($reader->current()['author']);
@@ -98,7 +100,7 @@ class XmlReaderTest extends TestCase
         $this->assertFalse($reader->isDenormalizable());
 
         // test count
-        $this->assertEquals(2, \count($reader));
+        $this->assertCount(2, $reader);
 
         // test index
         $this->assertEquals(1, $reader->index());
@@ -107,7 +109,7 @@ class XmlReaderTest extends TestCase
         // test headers
         $this->assertEquals(
             ['author', 'title', 'genre', 'price', 'description'],
-            array_keys($reader->current())
+            \array_keys($reader->current())
         );
         $this->assertArrayHasKey('author', $reader->current());
         $this->assertNotNull($reader->current()['author']);

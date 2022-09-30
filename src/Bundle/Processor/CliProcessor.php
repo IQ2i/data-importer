@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the DataImporter package.
  *
@@ -99,7 +101,7 @@ class CliProcessor implements BatchProcessorInterface
             case OutputInterface::VERBOSITY_VERBOSE:
             case OutputInterface::VERBOSITY_VERY_VERBOSE:
             case OutputInterface::VERBOSITY_DEBUG:
-                $this->io->comment(sprintf('Row %d/%d',
+                $this->io->comment(\sprintf('Row %d/%d',
                     $message->getCurrentIteration(),
                     $message->getTotalIteration()
                 ));
@@ -127,7 +129,7 @@ class CliProcessor implements BatchProcessorInterface
         if (!empty($this->errors)) {
             $elements = [];
             foreach ($this->errors as $key => $value) {
-                $elements[] = sprintf('Line #%d: %s', $key, $value);
+                $elements[] = \sprintf('Line #%d: %s', $key, $value);
             }
             $this->io->error('Errors occured during import:');
             $this->io->listing($elements);
