@@ -16,7 +16,6 @@ namespace IQ2i\DataImporter\Bundle\Processor;
 use IQ2i\DataImporter\Bundle\Exception\ItemHandlingException;
 use IQ2i\DataImporter\Exchange\Message;
 use IQ2i\DataImporter\Processor\BatchProcessorInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -77,12 +76,12 @@ class CliProcessor implements BatchProcessorInterface
     {
         try {
             ($this->handleItem)($message);
-        } catch (\Exception $exception) {
+        } catch (ItemHandlingException $itemHandlingException) {
             if ($this->pauseOnError) {
-                throw new ItemHandlingException('Error during item handling', Command::FAILURE, $exception);
+                throw $itemHandlingException;
             }
 
-            $this->errors[$message->getCurrentIteration()] = $exception->getMessage();
+            $this->errors[$message->getCurrentIteration()] = $itemHandlingException->getMessage();
         }
 
         switch ($this->output->getVerbosity()) {
