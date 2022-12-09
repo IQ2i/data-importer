@@ -45,7 +45,7 @@ class CliProcessor implements BatchProcessorInterface
         private readonly \Closure $handleItem,
         private readonly \Closure $handleBatch,
         private readonly \Closure $handleEnd,
-        private readonly Serializer $serializer = new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]),
+        private readonly ?Serializer $serializer = new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]),
     ) {
         $this->io = new SymfonyStyle($this->input, $this->output);
         $this->progressBar = new ProgressBar($this->output);
