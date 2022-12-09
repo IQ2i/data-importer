@@ -18,31 +18,31 @@ class CsvReader implements ReaderInterface
     /**
      * @var string
      */
-    public const CONTEXT_DELIMITER = 'csv_delimiter';
+    final public const CONTEXT_DELIMITER = 'csv_delimiter';
 
     /**
      * @var string
      */
-    public const CONTEXT_ENCLOSURE = 'csv_enclosure';
+    final public const CONTEXT_ENCLOSURE = 'csv_enclosure';
 
     /**
      * @var string
      */
-    public const CONTEXT_ESCAPE_CHAR = 'csv_escape_char';
+    final public const CONTEXT_ESCAPE_CHAR = 'csv_escape_char';
 
     /**
      * @var string
      */
-    public const CONTEXT_HEADERS = 'csv_headers';
+    final public const CONTEXT_HEADERS = 'csv_headers';
 
     /**
      * @var string
      */
-    public const CONTEXT_NO_HEADERS = 'no_headers';
+    final public const CONTEXT_NO_HEADERS = 'no_headers';
 
-    private \SplFileInfo $file;
+    private readonly \SplFileInfo $file;
 
-    private \SplFileObject $iterator;
+    private readonly \SplFileObject $iterator;
 
     private int $count = 0;
 
@@ -58,7 +58,7 @@ class CsvReader implements ReaderInterface
 
     public function __construct(
         string $filePath,
-        private ?string $dto = null,
+        private readonly ?string $dto = null,
         array $defaultContext = [],
     ) {
         // create a new SplInfo from path

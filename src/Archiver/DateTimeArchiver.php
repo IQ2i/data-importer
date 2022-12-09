@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class DateTimeArchiver implements ArchiverInterface
 {
-    private string $rootPath;
+    private readonly string $rootPath;
 
     public function __construct(string $rootPath)
     {

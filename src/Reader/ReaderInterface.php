@@ -50,7 +50,7 @@ interface ReaderInterface extends \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
-    #[ReturnTypeWillChange]
+    #[\ReturnTypeWillChange]
     public function key();
 
     /**

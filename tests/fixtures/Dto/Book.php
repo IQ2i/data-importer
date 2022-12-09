@@ -15,15 +15,15 @@ namespace IQ2i\DataImporter\Tests\fixtures\Dto;
 
 class Book
 {
-    private $author;
+    private ?string $author = null;
 
-    private $title;
+    private ?string $title = null;
 
-    private $genre;
+    private ?string $genre = null;
 
-    private $price;
+    private ?float $price = null;
 
-    private $description;
+    private ?string $description = null;
 
     public function getAuthor(): string
     {

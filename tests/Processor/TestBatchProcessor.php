@@ -21,7 +21,7 @@ class TestBatchProcessor implements BatchProcessorInterface
     /**
      * @var int
      */
-    public const BATCH_SIZE = 2;
+    final public const BATCH_SIZE = 2;
 
     /**
      * {@inheritdoc}

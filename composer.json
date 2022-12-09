@@ -12,20 +12,19 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "ext-simplexml": "*",
-        "symfony/console": "^5.4 || ^6.0",
-        "symfony/filesystem": "^5.4 || ^6.0",
-        "symfony/property-access": "^5.4 || ^6.0",
-        "symfony/serializer": "^5.4 || ^6.0"
+        "symfony/console": "^6.1",
+        "symfony/filesystem": "^6.1",
+        "symfony/property-access": "^6.1",
+        "symfony/serializer": "^6.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.11",
+        "friendsofphp/php-cs-fixer": "^3.13",
         "mikey179/vfsstream": "^1.6",
-        "phpstan/phpstan": "^1.8",
+        "phpstan/phpstan": "^1.9",
         "phpunit/phpunit": "^9",
-        "rector/rector": "^0.14.5",
-        "kubawerlos/php-cs-fixer-custom-fixers": "^3.11"
+        "rector/rector": "^0.15"
     },
     "autoload": {
         "psr-4": { "IQ2i\\DataImporter\\": "src" }

@@ -28,10 +28,9 @@ $finder = PhpCsFixer\Finder::create()
 
 $config = new PhpCsFixer\Config();
 $config
-    ->registerCustomFixers(new PhpCsFixerCustomFixers\Fixers())
     ->setRiskyAllowed(true)
     ->setRules([
-        '@PHP80Migration' => true,
+        '@PHP81Migration' => true,
         '@PHPUnit84Migration:risky' => true,
         '@Symfony' => true,
         '@Symfony:risky' => true,
@@ -39,7 +38,6 @@ $config
         'header_comment' => ['header' => $fileHeaderComment],
         'modernize_strpos' => true,
         'native_function_invocation' => ['include' => ['@all'], 'scope' => 'namespaced', 'strict' => true],
-        PhpCsFixerCustomFixers\Fixer\MultilinePromotedPropertiesFixer::name() => true,
     ])
     ->setFinder($finder)
 ;

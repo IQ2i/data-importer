@@ -25,15 +25,12 @@ use Symfony\Component\Serializer\Serializer;
 
 class DataImporter
 {
-    private Serializer $serializer;
-
     public function __construct(
-        private ReaderInterface $reader,
-        private ProcessorInterface $processor,
-        private ?ArchiverInterface $archiver = null,
-        ?Serializer $serializer = null,
+        private readonly ReaderInterface $reader,
+        private readonly ProcessorInterface $processor,
+        private readonly ?ArchiverInterface $archiver = null,
+        private readonly Serializer $serializer = new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())])
     ) {
-        $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
     }
 
     public function execute(): void

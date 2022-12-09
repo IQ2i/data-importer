@@ -26,28 +26,26 @@ use Symfony\Component\Serializer\Serializer;
 
 class CliProcessor implements BatchProcessorInterface
 {
-    private SymfonyStyle $io;
+    private readonly SymfonyStyle $io;
 
-    private ProgressBar $progressBar;
+    private readonly ProgressBar $progressBar;
 
-    private bool $stepByStep;
+    private readonly bool $stepByStep;
 
-    private bool $pauseOnError;
+    private readonly bool $pauseOnError;
 
-    private int $batchSize;
-
-    private Serializer $serializer;
+    private readonly int $batchSize;
 
     private array $errors = [];
 
     public function __construct(
-        private InputInterface $input,
-        private OutputInterface $output,
-        private \Closure $handleBegin,
-        private \Closure $handleItem,
-        private \Closure $handleBatch,
-        private \Closure $handleEnd,
-        ?Serializer $serializer = null,
+        private readonly InputInterface $input,
+        private readonly OutputInterface $output,
+        private readonly \Closure $handleBegin,
+        private readonly \Closure $handleItem,
+        private readonly \Closure $handleBatch,
+        private readonly \Closure $handleEnd,
+        private readonly Serializer $serializer = new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]),
     ) {
         $this->io = new SymfonyStyle($this->input, $this->output);
         $this->progressBar = new ProgressBar($this->output);
@@ -59,8 +57,6 @@ class CliProcessor implements BatchProcessorInterface
 
         $this->pauseOnError = (bool) $this->input->getOption('pause-on-error');
         $this->batchSize = (int) $this->input->getOption('batch-size');
-
-        $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
     }
 
     public function begin(Message $message)
@@ -116,7 +112,7 @@ class CliProcessor implements BatchProcessorInterface
 
         ($this->handleEnd)($message, $this->errors);
 
-        if (!empty($this->errors)) {
+        if ([] !== $this->errors) {
             $elements = [];
             foreach ($this->errors as $key => $value) {
                 $elements[] = \sprintf('Line #%d: %s', $key, $value);

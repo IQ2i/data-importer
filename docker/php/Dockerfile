@@ -1,12 +1,18 @@
-FROM php:8.0-cli-alpine
+#syntax=docker/dockerfile:1.4
 
-RUN apk add --no-cache git
+FROM php:8.1-cli-alpine
 
-RUN curl --location --output /usr/local/bin/install-php-extensions https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \
-	&& chmod +x /usr/local/bin/install-php-extensions \
-	&& sync \
-	&& install-php-extensions \
-       @composer \
-       intl \
-       pcntl \
-	   pcov
+COPY --from=mlocati/php-extension-installer --link /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=composer/composer:2-bin --link /composer /usr/bin/composer
+
+RUN apk add --no-cache  \
+      git \
+    ;
+
+RUN set -eux; \
+    install-php-extensions \
+    	intl \
+        pcov \
+        pcntl \
+    	zip \
+    ;

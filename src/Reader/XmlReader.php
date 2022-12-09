@@ -18,9 +18,9 @@ class XmlReader implements ReaderInterface
     /**
      * @var string
      */
-    public const CONTEXT_XPATH = 'xml_xpath';
+    final public const CONTEXT_XPATH = 'xml_xpath';
 
-    private \SplFileInfo $file;
+    private readonly \SplFileInfo $file;
 
     private \SimpleXMLIterator $iterator;
 
@@ -32,7 +32,7 @@ class XmlReader implements ReaderInterface
 
     public function __construct(
         string $filePath,
-        private ?string $dto = null,
+        private readonly ?string $dto = null,
         array $defaultContext = [],
     ) {
         // create a new SplInfo from path
@@ -53,7 +53,7 @@ class XmlReader implements ReaderInterface
             $element = new \SimpleXMLElement($this->file->getPathname(), 0, true);
 
             // explode string into array
-            $nodes = \explode('/', $this->defaultContext[self::CONTEXT_XPATH]);
+            $nodes = \explode('/', (string) $this->defaultContext[self::CONTEXT_XPATH]);
 
             // get first node (current element node)
             $rootNode = \array_shift($nodes);
