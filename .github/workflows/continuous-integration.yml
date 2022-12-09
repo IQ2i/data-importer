@@ -3,11 +3,9 @@ name: "Continuous Integration"
 on:
   push:
     branches:
-      - 3.x
       - 4.x
   pull_request:
     branches:
-      - 3.x
       - 4.x
 
 jobs:
@@ -17,7 +15,7 @@ jobs:
     strategy:
       matrix:
         operating-system: ['ubuntu-latest', 'macos-latest']
-        php-version: ['8.0', '8.1']
+        php-version: ['8.1', '8.2']
 
     steps:
       - name: Checkout
@@ -36,13 +34,13 @@ jobs:
           dependency-versions: ${{ matrix.dependencies }}
 
       - name: Test PHP-CS-Fixer
-        run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-ansi
+        run: PHP_CS_FIXER_IGNORE_ENV=1 php vendor/bin/php-cs-fixer fix --dry-run --diff --no-ansi
 
       - name: Test PHPStan
-        run: ./vendor/bin/phpstan analyse
+        run: php vendor/bin/phpstan analyse
 
       - name: Test Rector
-        run: ./vendor/bin/rector process --ansi
+        run: php vendor/bin/rector process --ansi
 
       - name: Test PHPUnit
-        run: ./vendor/bin/phpunit
+        run: php vendor/bin/phpunit
