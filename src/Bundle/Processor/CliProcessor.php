@@ -26,8 +26,6 @@ use Symfony\Component\Serializer\Serializer;
 
 class CliProcessor implements BatchProcessorInterface
 {
-    private readonly Serializer $serializer;
-
     private readonly SymfonyStyle $io;
 
     private readonly ProgressBar $progressBar;
@@ -47,7 +45,7 @@ class CliProcessor implements BatchProcessorInterface
         private readonly \Closure $handleItem,
         private readonly \Closure $handleBatch,
         private readonly \Closure $handleEnd,
-        ?Serializer $serializer = null,
+        private ?Serializer $serializer = null,
     ) {
         $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
 
@@ -144,6 +142,8 @@ class CliProcessor implements BatchProcessorInterface
         }
 
         if (\is_object($data)) {
+            $this->serializer ??= new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
+
             $data = $this->serializer->normalize($data);
         }
 

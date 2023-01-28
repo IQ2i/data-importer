@@ -25,13 +25,11 @@ use Symfony\Component\Serializer\Serializer;
 
 class DataImporter
 {
-    private readonly Serializer $serializer;
-
     public function __construct(
         private readonly ReaderInterface $reader,
         private readonly ProcessorInterface $processor,
         private readonly ?ArchiverInterface $archiver = null,
-        ?Serializer $serializer = null,
+        private ?Serializer $serializer = null,
     ) {
         $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
     }
@@ -63,6 +61,8 @@ class DataImporter
 
     private function serializeData(array $data): mixed
     {
+        $this->serializer ??= new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
+
         try {
             return $this->serializer->denormalize($data, $this->reader->getDto());
         } catch (\Exception $exception) {
