@@ -1,0 +1,22 @@
+[
+    {
+        "author": {
+            "firstname": "Matthew",
+            "lastname": "Gambardella"
+        },
+        "title": "XML Developer's Guide",
+        "genre": "Computer",
+        "price": 44.95,
+        "description": "An in-depth look at creating applications with XML."
+    },
+    {
+        "author": {
+            "firstname": "Kim",
+            "lastname": "Ralls"
+        },
+        "title": "Midnight Rain",
+        "genre": "Fantasy",
+        "price": 5.95,
+        "description": "A former architect battles corporate zombies, an evil sorceress, and her own childhood to become queen of the world."
+    }
+]
