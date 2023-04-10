@@ -37,41 +37,26 @@ class JsonReader implements ReaderInterface
         $this->rewind();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDto(): ?string
     {
         return $this->dto;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isDenormalizable(): bool
     {
         return null !== $this->dto;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFile(): \SplFileInfo
     {
         return $this->file;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function index()
+    public function index(): mixed
     {
         return $this->index;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function current(): array
     {
         if (!$this->valid()) {
@@ -81,42 +66,27 @@ class JsonReader implements ReaderInterface
         return $this->iterator->current();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function next(): void
     {
         $this->iterator->next();
         ++$this->index;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function key(): mixed
     {
         return $this->iterator->key();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function valid(): bool
     {
         return $this->iterator->valid();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rewind(): void
     {
         $this->iterator->rewind();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function count(): int
     {
         return $this->iterator->count();

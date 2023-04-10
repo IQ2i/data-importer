@@ -13,58 +13,25 @@ declare(strict_types=1);
 
 namespace IQ2i\DataImporter\Reader;
 
-use ReturnTypeWillChange;
-
 interface ReaderInterface extends \Iterator, \Countable
 {
-    /**
-     * Get DTO.
-     */
     public function getDto(): ?string;
 
-    /**
-     * Check if file can be denormalized.
-     */
     public function isDenormalizable(): bool;
 
-    /**
-     * Get file.
-     */
     public function getFile(): \SplFileInfo;
 
-    /**
-     * Get current index.
-     */
-    public function index();
+    public function index(): mixed;
 
-    /**
-     * {@inheritdoc}
-     */
     public function current(): array;
 
-    /**
-     * {@inheritdoc}
-     */
     public function next(): void;
 
-    /**
-     * {@inheritdoc}
-     */
-    #[\ReturnTypeWillChange]
-    public function key();
+    public function key(): mixed;
 
-    /**
-     * {@inheritdoc}
-     */
     public function valid(): bool;
 
-    /**
-     * {@inheritdoc}
-     */
     public function rewind(): void;
 
-    /**
-     * {@inheritdoc}
-     */
     public function count(): int;
 }

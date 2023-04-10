@@ -61,24 +61,14 @@ class CsvReader implements ReaderInterface
         private readonly ?string $dto = null,
         array $defaultContext = [],
     ) {
-        // create a new SplInfo from path
         $this->file = new \SplFileInfo($filePath);
-
-        // check if file is readable
         if (!$this->file->isReadable()) {
             throw new \InvalidArgumentException('The file '.$this->file->getFilename().' is not readable.');
         }
 
-        // create SplObject from SplInfo
-        $this->iterator = $this->file->openFile();
-
-        // update default context
         $this->defaultContext = \array_merge($this->defaultContext, $defaultContext);
-        if (\PHP_VERSION_ID < 70400 && '' === $this->defaultContext[self::CONTEXT_ESCAPE_CHAR]) {
-            $this->defaultContext[self::CONTEXT_ESCAPE_CHAR] = '\\';
-        }
 
-        // update file attributes
+        $this->iterator = $this->file->openFile();
         $this->iterator->setFlags(
             \SplFileObject::READ_CSV |
             \SplFileObject::SKIP_EMPTY |
@@ -91,13 +81,11 @@ class CsvReader implements ReaderInterface
             $this->defaultContext[self::CONTEXT_ESCAPE_CHAR]
         );
 
-        // init headers
         if (!$this->defaultContext[self::CONTEXT_NO_HEADERS]) {
             $this->rewind();
             $this->defaultContext[self::CONTEXT_HEADERS] = $this->iterator->current();
         }
 
-        // update counter
         $this->rewind();
         while ($this->valid()) {
             ++$this->count;
@@ -107,41 +95,26 @@ class CsvReader implements ReaderInterface
         $this->rewind();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDto(): ?string
     {
         return $this->dto;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isDenormalizable(): bool
     {
         return null !== $this->dto && !empty($this->defaultContext[self::CONTEXT_HEADERS]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFile(): \SplFileInfo
     {
         return $this->file;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function index()
+    public function index(): mixed
     {
         return $this->index;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function current(): array
     {
         if (!$this->valid()) {
@@ -159,39 +132,26 @@ class CsvReader implements ReaderInterface
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function next(): void
     {
         $this->iterator->next();
         ++$this->index;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function key(): mixed
     {
         return $this->iterator->key();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function valid(): bool
     {
         return $this->iterator->valid();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rewind(): void
     {
         $this->iterator->rewind();
 
-        // skip headers
         if (!empty($this->defaultContext[self::CONTEXT_HEADERS])) {
             $this->next();
         }
@@ -199,9 +159,6 @@ class CsvReader implements ReaderInterface
         $this->index = 1;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function count(): int
     {
         return $this->count;
