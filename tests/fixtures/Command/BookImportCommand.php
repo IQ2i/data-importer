@@ -17,11 +17,11 @@ use IQ2i\DataImporter\Bundle\Command\AbstractImportCommand;
 use IQ2i\DataImporter\Exchange\Message;
 use IQ2i\DataImporter\Reader\CsvReader;
 use IQ2i\DataImporter\Reader\ReaderInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'app:import:book')]
 class BookImportCommand extends AbstractImportCommand
 {
-    protected static $defaultName = 'app:import:book';
-
     protected function handleItem(): callable
     {
         return static function (Message $message) {
