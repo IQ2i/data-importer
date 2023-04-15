@@ -14,11 +14,14 @@ declare(strict_types=1);
 namespace IQ2i\DataImporter;
 
 use IQ2i\DataImporter\Archiver\ArchiverInterface;
+use IQ2i\DataImporter\Bundle\Messenger\ProcessItemMessage;
 use IQ2i\DataImporter\Exchange\MessageFactory;
+use IQ2i\DataImporter\Processor\AsyncProcessorInterface;
 use IQ2i\DataImporter\Processor\BatchProcessorInterface;
 use IQ2i\DataImporter\Processor\ProcessorInterface;
 use IQ2i\DataImporter\Reader\ReaderInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -32,6 +35,7 @@ class DataImporter
         private readonly ProcessorInterface $processor,
         private readonly ?ArchiverInterface $archiver = null,
         ?Serializer $serializer = null,
+        private readonly ?MessageBusInterface $bus = null,
     ) {
         $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
     }
@@ -41,10 +45,18 @@ class DataImporter
         $this->processor->begin(MessageFactory::create($this->reader));
 
         foreach ($this->reader as $data) {
-            $this->processor->item(MessageFactory::create(
+            $message = MessageFactory::create(
                 $this->reader,
                 $this->reader->isDenormalizable() ? $this->serializeData($data) : $data
-            ));
+            );
+
+            if ($this->processor instanceof AsyncProcessorInterface && null !== $this->bus) {
+                $this->bus->dispatch(new ProcessItemMessage($message));
+
+                continue;
+            }
+
+            $this->processor->item($message);
 
             if ($this->processor instanceof BatchProcessorInterface && (
                 0 === $this->reader->index() % $this->processor->getBatchSize() || $this->reader->index() === $this->reader->count()
