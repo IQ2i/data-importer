@@ -54,7 +54,7 @@ class DataImporter
         }
 
         $archivedFilePath = null;
-        if ($this->archiver instanceof ArchiverInterface) {
+        if (null !== $this->archiver) {
             $archivedFilePath = $this->doArchive();
         }
 

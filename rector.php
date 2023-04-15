@@ -11,6 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\Config\RectorConfig;
 use Rector\Php81\Rector\ClassMethod\NewInInitializerRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
@@ -32,5 +33,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->skip([
         NewInInitializerRector::class,
+        FlipTypeControlToUseExclusiveTypeRector::class,
     ]);
 };
