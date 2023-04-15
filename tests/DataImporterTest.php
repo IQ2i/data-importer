@@ -22,6 +22,7 @@ use IQ2i\DataImporter\Tests\Processor\TestBatchProcessor;
 use IQ2i\DataImporter\Tests\Processor\TestItemProcessor;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
 
@@ -41,9 +42,9 @@ class DataImporterTest extends TestCase
         $this->fs->addChild(vfsStream::newDirectory('archive_unreadable', 0o111));
     }
 
+    #[DoesNotPerformAssertions]
     public function testItemProcessor()
     {
-        // set up data importer
         $dataImporter = new DataImporter(
             new CsvReader(
                 $this->fs->getChild('books.csv')->url(),
@@ -54,12 +55,12 @@ class DataImporterTest extends TestCase
             new DateTimeArchiver($this->fs->getChild('archive')->url())
         );
 
-        $this->assertNull($dataImporter->execute());
+        $dataImporter->execute();
     }
 
+    #[DoesNotPerformAssertions]
     public function testBatchProcessor()
     {
-        // set up data importer
         $dataImporter = new DataImporter(
             new XmlReader(
                 $this->fs->getChild('books.xml')->url(),
@@ -70,12 +71,12 @@ class DataImporterTest extends TestCase
             new DateTimeArchiver($this->fs->getChild('archive')->url())
         );
 
-        $this->assertNull($dataImporter->execute());
+        $dataImporter->execute();
     }
 
+    #[DoesNotPerformAssertions]
     public function testWithDto()
     {
-        // set up data importer
         $dataImporter = new DataImporter(
             new CsvReader(
                 $this->fs->getChild('books.csv')->url(),
@@ -85,7 +86,7 @@ class DataImporterTest extends TestCase
             new TestItemProcessor()
         );
 
-        $this->assertNull($dataImporter->execute());
+        $dataImporter->execute();
     }
 
     public function testWithWrongDto()
