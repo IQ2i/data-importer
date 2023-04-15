@@ -11,31 +11,36 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace IQ2i\DataImporter\Tests\Processor;
+namespace IQ2i\DataImporter\Tests\fixtures\Processor;
 
 use IQ2i\DataImporter\Exchange\Message;
-use IQ2i\DataImporter\Processor\ProcessorInterface;
+use IQ2i\DataImporter\Processor\BatchProcessorInterface;
 
-class TestItemProcessor implements ProcessorInterface
+class BatchProcessor implements BatchProcessorInterface
 {
     /**
-     * {@inheritdoc}
+     * @var int
      */
+    final public const BATCH_SIZE = 2;
+
     public function begin(Message $message): void
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function item(Message $message): void
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function end(Message $message): void
     {
+    }
+
+    public function batch(Message $message)
+    {
+    }
+
+    public function getBatchSize()
+    {
+        return self::BATCH_SIZE;
     }
 }
