@@ -14,10 +14,12 @@ declare(strict_types=1);
 namespace IQ2i\DataImporter\Tests;
 
 use IQ2i\DataImporter\Archiver\DateTimeArchiver;
+use IQ2i\DataImporter\Bundle\Messenger\ProcessItemMessage;
 use IQ2i\DataImporter\DataImporter;
 use IQ2i\DataImporter\Reader\CsvReader;
 use IQ2i\DataImporter\Reader\XmlReader;
 use IQ2i\DataImporter\Tests\fixtures\Dto\Book;
+use IQ2i\DataImporter\Tests\fixtures\Processor\AsyncProcessor;
 use IQ2i\DataImporter\Tests\fixtures\Processor\BatchProcessor;
 use IQ2i\DataImporter\Tests\fixtures\Processor\ItemProcessor;
 use org\bovigo\vfs\vfsStream;
@@ -25,6 +27,8 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class DataImporterTest extends TestCase
 {
@@ -142,5 +146,50 @@ class DataImporterTest extends TestCase
         );
 
         $dataImporter->execute();
+    }
+
+    public function testAsyncProcessor()
+    {
+        $bus = new class() implements MessageBusInterface {
+            public $messages = [];
+
+            public $stamps = [];
+
+            public function dispatch($message, array $stamps = []): Envelope
+            {
+                $this->messages[] = $message;
+                $this->stamps = $stamps;
+
+                return new Envelope($message, $stamps);
+            }
+        };
+
+        $dataImporter = new DataImporter(
+            new CsvReader(
+                $this->fs->getChild('books.csv')->url(),
+                null,
+                [CsvReader::CONTEXT_DELIMITER => ';']
+            ),
+            new AsyncProcessor(),
+            null,
+            null,
+            $bus
+        );
+
+        $dataImporter->execute();
+
+        $this->assertCount(2, $bus->messages);
+
+        /** @var ProcessItemMessage $message */
+        $message = \array_pop($bus->messages);
+
+        $this->assertEquals(static function () {}, $message->getHandleItem());
+        $this->assertEquals([
+            'author' => 'Ralls, Kim',
+            'title' => 'Midnight Rain',
+            'genre' => 'Fantasy',
+            'price' => '5.95',
+            'description' => 'A former architect battles corporate zombies, an evil sorceress, and her own childhood to become queen of the world.',
+        ], $message->getData()->getData());
     }
 }
