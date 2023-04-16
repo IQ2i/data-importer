@@ -1,6 +1,19 @@
 CHANGELOG
 =========
 
+4.0.0
+-----
+
+* all processors' callback (`begin`, `ìtem`, `end` and `batch`) 
+  receive a `Message` object as first argument
+* `end` callback get archived file path
+* upgrade minimum PHP version to 8.1
+* `CliProcessor` now only catch `ItemHandlingException`
+* fix unexpected behavior with `Serializer` initialization
+* add `JsonReader`
+* add support for async processing
+* init Symfony bundle configuration
+
 3.2.0
 -----
 
