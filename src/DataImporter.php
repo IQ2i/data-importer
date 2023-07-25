@@ -77,7 +77,10 @@ class DataImporter
     private function serializeData(array $data): mixed
     {
         try {
-            return $this->serializer->denormalize($data, $this->reader->getDto());
+            /** @var Serializer $serializer */
+            $serializer = $this->serializer;
+
+            return $serializer->denormalize($data, $this->reader->getDto());
         } catch (\Exception $exception) {
             throw new \InvalidArgumentException('An error occurred while denormalizing data: '.$exception->getMessage(), $exception->getCode(), $exception);
         }
