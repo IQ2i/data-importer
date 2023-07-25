@@ -21,8 +21,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class CliProcessor implements BatchProcessorInterface
 {
@@ -45,7 +47,7 @@ class CliProcessor implements BatchProcessorInterface
         private readonly \Closure $handleItem,
         private readonly \Closure $handleBatch,
         private readonly \Closure $handleEnd,
-        private ?Serializer $serializer = null,
+        private ?SerializerInterface $serializer = null,
     ) {
         $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
 
@@ -144,7 +146,9 @@ class CliProcessor implements BatchProcessorInterface
         if (\is_object($data)) {
             $this->serializer ??= new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
 
-            $data = $this->serializer->normalize($data);
+            if ($this->serializer instanceof NormalizableInterface) {
+                $data = $this->serializer->normalize($data);
+            }
         }
 
         $result = [];

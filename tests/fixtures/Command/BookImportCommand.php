@@ -28,7 +28,7 @@ class BookImportCommand extends AbstractImportCommand
         };
     }
 
-    protected function getReader(?string $filename = null): ReaderInterface
+    protected function getReader(string $filename = null): ReaderInterface
     {
         return new CsvReader($filename, null, [CsvReader::CONTEXT_DELIMITER => ';']);
     }

@@ -25,16 +25,17 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class DataImporter
 {
-    private readonly Serializer $serializer;
+    private readonly SerializerInterface $serializer;
 
     public function __construct(
         private readonly ReaderInterface $reader,
         private readonly ProcessorInterface $processor,
         private readonly ?ArchiverInterface $archiver = null,
-        ?Serializer $serializer = null,
+        SerializerInterface $serializer = null,
         private readonly ?MessageBusInterface $bus = null,
     ) {
         $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
@@ -76,7 +77,10 @@ class DataImporter
     private function serializeData(array $data): mixed
     {
         try {
-            return $this->serializer->denormalize($data, $this->reader->getDto());
+            /** @var Serializer $serializer */
+            $serializer = $this->serializer;
+
+            return $serializer->denormalize($data, $this->reader->getDto());
         } catch (\Exception $exception) {
             throw new \InvalidArgumentException('An error occurred while denormalizing data: '.$exception->getMessage(), $exception->getCode(), $exception);
         }
