@@ -20,7 +20,7 @@ final class MessageFactory
     public static function create(
         ReaderInterface $reader,
         mixed $data = null,
-        ?string $archiveFilePath = null,
+        string $archiveFilePath = null,
     ): Message {
         return new Message(
             $reader->getFile()->getFilename(),
