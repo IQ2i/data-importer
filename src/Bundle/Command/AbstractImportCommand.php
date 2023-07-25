@@ -27,7 +27,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractImportCommand extends Command
 {
@@ -37,7 +37,7 @@ abstract class AbstractImportCommand extends Command
 
     abstract protected function handleItem(): callable;
 
-    abstract protected function getReader(?string $filename = null): ReaderInterface;
+    abstract protected function getReader(string $filename = null): ReaderInterface;
 
     protected function configure(): void
     {
@@ -105,7 +105,7 @@ abstract class AbstractImportCommand extends Command
         return null;
     }
 
-    protected function getSerializer(): ?Serializer
+    protected function getSerializer(): ?SerializerInterface
     {
         return null;
     }
