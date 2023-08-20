@@ -16,6 +16,7 @@ namespace IQ2i\DataImporter\Tests;
 use IQ2i\DataImporter\Archiver\DateTimeArchiver;
 use IQ2i\DataImporter\Bundle\Messenger\ProcessItemMessage;
 use IQ2i\DataImporter\DataImporter;
+use IQ2i\DataImporter\Processor\CallbackProcessor;
 use IQ2i\DataImporter\Reader\CsvReader;
 use IQ2i\DataImporter\Reader\XmlReader;
 use IQ2i\DataImporter\Tests\fixtures\Dto\Book;
@@ -44,6 +45,22 @@ class DataImporterTest extends TestCase
 
         $this->fs->addChild(vfsStream::newDirectory('archive', 0o755));
         $this->fs->addChild(vfsStream::newDirectory('archive_unreadable', 0o111));
+    }
+
+    #[DoesNotPerformAssertions]
+    public function testCallbackProcessor()
+    {
+        $dataImporter = new DataImporter(
+            new CsvReader(
+                $this->fs->getChild('books.csv')->url(),
+                null,
+                [CsvReader::CONTEXT_DELIMITER => ';']
+            ),
+            new CallbackProcessor(),
+            new DateTimeArchiver($this->fs->getChild('archive')->url())
+        );
+
+        $dataImporter->execute();
     }
 
     #[DoesNotPerformAssertions]
