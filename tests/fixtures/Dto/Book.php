@@ -17,7 +17,7 @@ class Book
         return $this->author;
     }
 
-    public function setAuthor(string $author = null): self
+    public function setAuthor(?string $author): self
     {
         $this->author = $author;
 
@@ -29,7 +29,7 @@ class Book
         return $this->title;
     }
 
-    public function setTitle(string $title = null): self
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 
@@ -41,7 +41,7 @@ class Book
         return $this->genre;
     }
 
-    public function setGenre(string $genre = null): self
+    public function setGenre(?string $genre): self
     {
         $this->genre = $genre;
 
@@ -53,7 +53,7 @@ class Book
         return $this->price;
     }
 
-    public function setPrice(float $price = null): self
+    public function setPrice(?float $price): self
     {
         $this->price = $price;
 
@@ -65,7 +65,7 @@ class Book
         return $this->description;
     }
 
-    public function setDescription(string $description = null): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 

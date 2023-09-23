@@ -59,8 +59,8 @@ class Generator
                 ->addBody('')
                 ->addBody('return $this;');
 
-            $setter->addParameter($column['name'], null)
-                ->setType($column['type']);
+            $setter->addParameter($column['name'])
+                ->setType('?'.$column['type']);
         }
 
         $printer = new PsrPrinter();
