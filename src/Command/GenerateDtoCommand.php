@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace IQ2i\DataImporter\Command;
 
 use IQ2i\DataImporter\Dto\Generator;
+use IQ2i\DataImporter\Dto\TypeDetector;
 use IQ2i\DataImporter\Reader\CsvReader;
 use IQ2i\DataImporter\Reader\ReaderInterface;
 use IQ2i\DataImporter\Reader\XmlReader;
@@ -48,15 +49,9 @@ class GenerateDtoCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        $filesystem = new Filesystem();
         $io = new SymfonyStyle($input, $output);
-
-        $file = $input->getArgument('file');
-        if (!\file_exists($file)) {
-            throw new \InvalidArgumentException(\sprintf('File "%s" does not exists.', $file));
-        }
 
         if (null === $this->defaultPath || $input->hasOption('path')) {
             $this->defaultPath = $input->getOption('path') ?? $io->ask("Specify the DTO's path");
@@ -66,6 +61,17 @@ class GenerateDtoCommand extends Command
 
         if (null === $this->defaultNamespace || $input->hasOption('namespace')) {
             $this->defaultNamespace = $input->getOption('namespace') ?? $io->ask("Specify the DTO's namespace");
+        }
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $filesystem = new Filesystem();
+        $io = new SymfonyStyle($input, $output);
+
+        $file = $input->getArgument('file');
+        if (!\file_exists($file)) {
+            throw new \InvalidArgumentException(\sprintf('File "%s" does not exists.', $file));
         }
 
         $dtoClass = $io->ask('Class name of the entity to create or update');
@@ -94,39 +100,30 @@ class GenerateDtoCommand extends Command
         /** @var ReaderInterface $reader */
         $reader = new $readerClass($file, null, $context);
 
-        // init properties array
         $properties = [];
         foreach ($reader->current() as $key => $value) {
             $name = u($key)->camel()->toString();
             $properties[$key] = [
                 'name' => $name,
                 'serialized_name' => $name !== $key ? $key : null,
-                'types' => [self::findPropertyType($value)],
+                'types' => [TypeDetector::findType($value)],
             ];
         }
 
         for ($i = 0; $i < $input->getOption('length'); ++$i) {
             foreach ($reader->current() as $key => $value) {
-                $properties[$key]['types'][] = self::findPropertyType($value);
+                $properties[$key]['types'][] = TypeDetector::findType($value);
             }
 
             $reader->next();
         }
 
-        foreach ($properties as $property) {
-            $property['type'] = 1 === \count(\array_unique($property['types'], \SORT_REGULAR))
-                ? $property['types'][0]
-                : 'string';
+        foreach ($properties as &$property) {
+            $property['type'] = TypeDetector::resolve($property['types']);
+            unset($property['types']);
         }
 
-        $generator = new Generator();
-        $generatedDto = $generator->generate($dtoClass, [
-            ['name' => 'author', 'serialized_name' => null, 'type' => 'string'],
-            ['name' => 'title', 'serialized_name' => null, 'type' => 'string'],
-            ['name' => 'genre', 'serialized_name' => null, 'type' => 'string'],
-            ['name' => 'price', 'serialized_name' => null, 'type' => 'float'],
-            ['name' => 'description', 'serialized_name' => null, 'type' => 'string'],
-        ], $this->defaultNamespace);
+        $generatedDto = (new Generator())->generate($dtoClass, $properties, $this->defaultNamespace);
 
         if (!$filesystem->exists($this->defaultPath)) {
             $filesystem->mkdir($this->defaultPath);
@@ -135,18 +132,5 @@ class GenerateDtoCommand extends Command
         $filesystem->dumpFile($dtoFilename, $generatedDto);
 
         return Command::SUCCESS;
-    }
-
-    private static function findPropertyType(string $value): string
-    {
-        if (\is_numeric($value) && \str_contains($value, '.')) {
-            return 'float';
-        } elseif (\is_numeric($value) && !\in_array($value, ['0', '1'])) {
-            return 'int';
-        } elseif (\in_array($value, ['0', '1', 'true', 'false'])) {
-            return 'bool';
-        } else {
-            return 'string';
-        }
     }
 }
