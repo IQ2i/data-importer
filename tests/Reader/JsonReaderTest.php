@@ -22,7 +22,7 @@ class JsonReaderTest extends TestCase
     {
         // init reader
         $reader = new JsonReader(
-            __DIR__.'/../fixtures/json/books.json',
+            __DIR__.'/../fixtures/json/books_without_pointer.json',
             null,
         );
 
@@ -31,7 +31,7 @@ class JsonReaderTest extends TestCase
 
         // test file
         $this->assertEquals(
-            new \SplFileInfo(__DIR__.'/../fixtures/json/books.json'),
+            new \SplFileInfo(__DIR__.'/../fixtures/json/books_without_pointer.json'),
             $reader->getFile()
         );
 
@@ -84,7 +84,7 @@ class JsonReaderTest extends TestCase
     {
         // init reader
         $reader = new JsonReader(
-            __DIR__.'/../fixtures/json/books.json',
+            __DIR__.'/../fixtures/json/books_with_pointer.json',
             null,
             [JsonReader::POINTER => '/author/books']
         );
