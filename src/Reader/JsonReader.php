@@ -25,7 +25,7 @@ class JsonReader implements ReaderInterface
 
     private readonly \SplFileInfo $file;
 
-    private readonly \Generator $iterator;
+    private readonly \Iterator $iterator;
 
     private int $index = 1;
 
@@ -55,10 +55,8 @@ class JsonReader implements ReaderInterface
             $options['pointer'] = $this->defaultContext[self::POINTER];
         }
 
-        $items = Items::fromFile($this->file->getRealPath(), $options);
-
-        $this->iterator = $items->getIterator();
-        $this->count = \iterator_count($this->iterator);
+        $this->count = \iterator_count(Items::fromFile($this->file->getRealPath(), $options));
+        $this->iterator = Items::fromFile($this->file->getRealPath(), $options)->getIterator();
 
         $this->rewind();
     }
