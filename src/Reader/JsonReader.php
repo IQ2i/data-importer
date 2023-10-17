@@ -13,17 +13,32 @@ declare(strict_types=1);
 
 namespace IQ2i\DataImporter\Reader;
 
+use JsonMachine\Items;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
+
 class JsonReader implements ReaderInterface
 {
+    /**
+     * @var string
+     */
+    final public const POINTER = 'pointer';
+
     private readonly \SplFileInfo $file;
 
-    private readonly \ArrayIterator $iterator;
+    private readonly \Iterator $iterator;
 
     private int $index = 1;
+
+    private int $count = 0;
+
+    private array $defaultContext = [
+        self::POINTER => null,
+    ];
 
     public function __construct(
         string $filePath,
         private readonly ?string $dto = null,
+        array $defaultContext = [],
     ) {
         $this->file = new \SplFileInfo($filePath);
 
@@ -31,8 +46,17 @@ class JsonReader implements ReaderInterface
             throw new \InvalidArgumentException('The file '.$this->file->getFilename().' is not readable.');
         }
 
-        $array = \json_decode(\file_get_contents($this->file->getRealPath()), true, 512, \JSON_THROW_ON_ERROR);
-        $this->iterator = new \ArrayIterator($array);
+        $this->defaultContext = \array_merge($this->defaultContext, $defaultContext);
+        $options = [
+            'decoder' => new ExtJsonDecoder(true),
+        ];
+
+        if (null !== $this->defaultContext[self::POINTER]) {
+            $options['pointer'] = $this->defaultContext[self::POINTER];
+        }
+
+        $this->count = \iterator_count(Items::fromFile($this->file->getRealPath(), $options));
+        $this->iterator = Items::fromFile($this->file->getRealPath(), $options)->getIterator();
 
         $this->rewind();
     }
@@ -89,6 +113,6 @@ class JsonReader implements ReaderInterface
 
     public function count(): int
     {
-        return $this->iterator->count();
+        return $this->count;
     }
 }
