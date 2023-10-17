@@ -32,6 +32,7 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->skip([
+        __DIR__.'/tests/fixtures/*',
         NewInInitializerRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
     ]);

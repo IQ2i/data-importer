@@ -19,7 +19,9 @@
         "symfony/filesystem": "^6.1",
         "symfony/property-access": "^6.1",
         "symfony/serializer": "^6.1",
-        "halaxa/json-machine": "^1.1"
+        "halaxa/json-machine": "^1.1",
+        "nette/php-generator": "^4.0",
+        "symfony/string": "^6.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.13",
@@ -39,5 +41,8 @@
     },
     "autoload-dev": {
         "psr-4": { "IQ2i\\DataImporter\\Tests\\": "tests" }
-    }
+    },
+    "bin": [
+        "bin/dataimporter"
+    ]
 }

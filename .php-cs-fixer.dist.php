@@ -24,6 +24,7 @@ $finder = PhpCsFixer\Finder::create()
     ->ignoreDotFiles(false)
     ->ignoreVCSIgnored(true)
     ->in(__DIR__)
+    ->exclude('tests/fixtures')
 ;
 
 $config = new PhpCsFixer\Config();
