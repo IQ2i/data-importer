@@ -79,4 +79,61 @@ class JsonReaderTest extends TestCase
         $reader->next();
         $this->assertEquals([], $reader->current());
     }
+
+    public function testReadJsonWithPointer()
+    {
+        // init reader
+        $reader = new JsonReader(
+            __DIR__.'/../fixtures/json/books.json',
+            null,
+            [JsonReader::POINTER => '/author/books']
+        );
+
+        // test denormalization
+        $this->assertFalse($reader->isDenormalizable());
+
+        // test file
+        $this->assertEquals(
+            new \SplFileInfo(__DIR__.'/../fixtures/json/books_with_pointer.json'),
+            $reader->getFile()
+        );
+
+        // test count
+        $this->assertCount(2, $reader);
+
+        // test index
+        $this->assertEquals(1, $reader->index());
+        $this->assertEquals(0, $reader->key());
+
+        // test headers
+        $this->assertEquals(
+            ['title', 'genre', 'price', 'description'],
+            \array_keys($reader->current())
+        );
+        $this->assertArrayHasKey('title', $reader->current());
+        $this->assertNotNull($reader->current()['title']);
+        $this->assertArrayHasKey('genre', $reader->current());
+        $this->assertNotNull($reader->current()['genre']);
+        $this->assertArrayHasKey('price', $reader->current());
+        $this->assertNotNull($reader->current()['price']);
+        $this->assertArrayHasKey('description', $reader->current());
+        $this->assertNotNull($reader->current()['description']);
+
+        // test line
+        $reader->next();
+        $this->assertEquals(2, $reader->index());
+        $this->assertEquals(
+            [
+                'title' => 'Midnight Rain',
+                'genre' => 'Fantasy',
+                'price' => '5.95',
+                'description' => 'A former architect battles corporate zombies, an evil sorceress, and her own childhood to become queen of the world.',
+            ],
+            $reader->current()
+        );
+
+        // test and of file
+        $reader->next();
+        $this->assertEquals([], $reader->current());
+    }
 }
