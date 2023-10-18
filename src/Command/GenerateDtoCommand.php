@@ -16,6 +16,7 @@ namespace IQ2i\DataImporter\Command;
 use IQ2i\DataImporter\Dto\Generator;
 use IQ2i\DataImporter\Dto\TypeDetector;
 use IQ2i\DataImporter\Reader\CsvReader;
+use IQ2i\DataImporter\Reader\JsonReader;
 use IQ2i\DataImporter\Reader\ReaderInterface;
 use IQ2i\DataImporter\Reader\XmlReader;
 use Symfony\Component\Console\Command\Command;
@@ -90,6 +91,9 @@ class GenerateDtoCommand extends Command
                 CsvReader::CONTEXT_DELIMITER => $io->ask('Specify the delimiter', ','),
                 CsvReader::CONTEXT_ENCLOSURE => $io->ask('Specify the enclosure', '"'),
                 CsvReader::CONTEXT_ESCAPE_CHAR => $io->ask('Specify the escape character', ''),
+            ],
+            JsonReader::class => [
+                JsonReader::POINTER => $io->ask('Specify the pointer', ''),
             ],
             XmlReader::class => [
                 XmlReader::CONTEXT_XPATH => $io->ask('Specify the xpath', ''),
