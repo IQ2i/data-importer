@@ -49,7 +49,7 @@ $dataImporter->execute();
 
 Additionally, this package provides deeper integration into Symfony:
 
-* [An abstract command to easily setup import jobs in your projects](/docs/command.md)
+* [An abstract command to easily setup import jobs in your projects](/docs/abstract_command.md)
 
 ## Issues and feature requests
 

@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+4.1.0
+-----
+
+* add command to generate DTOs base on files
+* add `CallbackProcessor`
+* update `JsonReader` to use less memory
+
 4.0.0
 -----
 

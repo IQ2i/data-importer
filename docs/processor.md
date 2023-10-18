@@ -84,3 +84,18 @@ class ArticleProcessor implements BatchProcessorInterface
     }
 }
 ```
+
+## Callback processor
+
+This is a processor that doesn't require creating a separate class. It is 
+useful whenever you need to perform a simple action, as demonstrated here: 
+
+```php
+use IQ2i\DataImporter\Processor\CallbackProcessor;
+
+$processor = new CallbackProcessor(
+    item: function (Message $message) {
+        // Do some stuff here
+    },
+);
+```

@@ -100,6 +100,46 @@ use IQ2i\DataImporter\Reader\JsonReader;
 $jsonReader = new JsonReader('/path/to/your/json/file');
 ```
 
+Just like the XmlReader, the JsonReader allows you to specify a node you 
+want to iterate over. Let's consider the following JSON file:
+
+```json
+{
+    "author": {
+        "firstname": "Kim",
+        "lastname": "Ralls",
+        "books": [
+            {
+                "title": "XML Developer's Guide",
+                "genre": "Computer",
+                "price": 44.95,
+                "description": "An in-depth look at creating applications with XML."
+            },
+            {
+                "title": "Midnight Rain",
+                "genre": "Fantasy",
+                "price": 5.95,
+                "description": "A former architect battles corporate zombies, an evil sorceress, and her own childhood to become queen of the world."
+            }
+        ]
+    }
+}
+```
+
+To iterate over the "books" node, you simply need to specify a pointer:
+
+```php
+<?php
+
+use IQ2i\DataImporter\Reader\JsonReader;
+
+$xmlReader = new JsonReader(
+    '/path/to/your/json/file',
+    null,
+    [JsonReader::POINTER => '/author/books']
+);
+```
+
 ## Create your own reader
 
 It is possible to create your own reader by implementing
