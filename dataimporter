@@ -1,0 +1,49 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+set_error_handler(static function ($severity, $message, $file, $line) {
+    if ($severity & error_reporting()) {
+        throw new ErrorException($message, 0, $severity, $file, $line);
+    }
+});
+
+// check environment requirements
+(function () {
+    if (\PHP_VERSION_ID < 80100 || \PHP_VERSION_ID >= 80400) {
+        fwrite(STDERR, "PHP needs to be a minimum version of PHP 7.4.0 and maximum version of PHP 8.3.*.\n");
+        fwrite(STDERR, 'Current PHP version: '.PHP_VERSION.".\n");
+
+        exit(1);
+    }
+
+    if (!ini_get('date.timezone')) {
+        ini_set('date.timezone', 'UTC');
+    }
+})();
+
+// load dependencies
+(function () {
+    $possibleFiles = [__DIR__.'/../../autoload.php', __DIR__.'/../autoload.php', __DIR__.'/vendor/autoload.php'];
+    $file = null;
+    foreach ($possibleFiles as $possibleFile) {
+        if (file_exists($possibleFile)) {
+            $file = $possibleFile;
+
+            break;
+        }
+    }
+
+    if (null === $file) {
+        throw new RuntimeException('Unable to locate autoload.php file.');
+    }
+
+    require_once $file;
+})();
+
+use IQ2i\DataImporter\Bundle\Console\Application;
+
+$application = new Application();
+$application->run();

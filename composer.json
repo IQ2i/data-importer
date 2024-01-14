@@ -43,6 +43,6 @@
         "psr-4": { "IQ2i\\DataImporter\\Tests\\": "tests" }
     },
     "bin": [
-        "bin/dataimporter"
+        "dataimporter"
     ]
 }

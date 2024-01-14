@@ -29,8 +29,8 @@ php: ## Connect to the PHP FPM container
 install: ## Install project
 	@$(PHP_CONT) composer install
 
-## —— Quality ✨ ——————————————————————————————————————————————————————
-quality: static rector
+## —— CI ✨ ————————————————————————————————————————————————————————————————————
+ci: static rector test
 
 static: ## Run static analysis tools
 	$(PHP) -d memory_limit=-1 vendor/bin/phpstan analyse
@@ -39,6 +39,5 @@ static: ## Run static analysis tools
 rector: ## Run rector
 	$(PHP) -d memory_limit=-1 vendor/bin/rector
 
-## —— Testing 🚣 ————————————————————————————————————————————————————————————————
 test: ## Run tests
 	$(PHP) vendor/bin/phpunit
