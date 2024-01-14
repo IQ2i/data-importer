@@ -13,10 +13,17 @@ declare(strict_types=1);
 
 namespace IQ2i\DataImporter\Bundle\Messenger;
 
-class MessageHandler
+use IQ2i\DataImporter\Exchange\Message;
+
+class AsyncMessage
 {
-    public function __invoke(ProcessItemMessage $message): void
+    public function __construct(
+        private readonly Message $data,
+    ) {
+    }
+
+    public function getData(): Message
     {
-        ($message->getHandleItem())($message->getData());
+        return $this->data;
     }
 }

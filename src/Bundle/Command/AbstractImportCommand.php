@@ -15,7 +15,6 @@ namespace IQ2i\DataImporter\Bundle\Command;
 
 use IQ2i\DataImporter\Archiver\ArchiverInterface;
 use IQ2i\DataImporter\Bundle\Exception\ItemHandlingException;
-use IQ2i\DataImporter\Bundle\Processor\AsyncCliProcessor;
 use IQ2i\DataImporter\Bundle\Processor\CliProcessor;
 use IQ2i\DataImporter\DataImporter;
 use IQ2i\DataImporter\Exchange\Message;
@@ -43,7 +42,6 @@ abstract class AbstractImportCommand extends Command
     {
         $this
             ->addArgument('filename', InputArgument::OPTIONAL, 'File to import')
-            ->addOption('async', null, InputOption::VALUE_NONE, 'Parallelize row process using symfony/messenger')
             ->addOption('step', null, InputOption::VALUE_NONE, 'Step through each record one-by-one')
             ->addOption('pause-on-error', null, InputOption::VALUE_NONE, 'Pause if an exception is thrown')
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Batch size', 100)
@@ -95,9 +93,7 @@ abstract class AbstractImportCommand extends Command
 
     protected function getProcessor(InputInterface $input, OutputInterface $output): ProcessorInterface
     {
-        return $input->getOption('async')
-            ? new AsyncCliProcessor($input, $output, $this->handleBegin(), $this->handleItem(), $this->handleBatch(), $this->handleEnd(), $this->getSerializer())
-            : new CliProcessor($input, $output, $this->handleBegin(), $this->handleItem(), $this->handleBatch(), $this->handleEnd(), $this->getSerializer());
+        return new CliProcessor($input, $output, $this->handleBegin(), $this->handleItem(), $this->handleBatch(), $this->handleEnd(), $this->getSerializer());
     }
 
     protected function getArchiver(): ?ArchiverInterface

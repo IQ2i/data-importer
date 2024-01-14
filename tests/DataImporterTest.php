@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace IQ2i\DataImporter\Tests;
 
 use IQ2i\DataImporter\Archiver\DateTimeArchiver;
-use IQ2i\DataImporter\Bundle\Messenger\ProcessItemMessage;
+use IQ2i\DataImporter\Bundle\Messenger\AsyncMessage;
 use IQ2i\DataImporter\DataImporter;
 use IQ2i\DataImporter\Processor\CallbackProcessor;
 use IQ2i\DataImporter\Reader\CsvReader;
@@ -168,9 +168,9 @@ class DataImporterTest extends TestCase
     public function testAsyncProcessor()
     {
         $bus = new class() implements MessageBusInterface {
-            public $messages = [];
+            public array $messages = [];
 
-            public $stamps = [];
+            public array $stamps = [];
 
             public function dispatch($message, array $stamps = []): Envelope
             {
@@ -181,26 +181,25 @@ class DataImporterTest extends TestCase
             }
         };
 
+        $processor = new AsyncProcessor();
+        $processor->setBus($bus);
+
         $dataImporter = new DataImporter(
             new CsvReader(
                 $this->fs->getChild('books.csv')->url(),
                 null,
                 [CsvReader::CONTEXT_DELIMITER => ';']
             ),
-            new AsyncProcessor(),
-            null,
-            null,
-            $bus
+            $processor,
         );
 
         $dataImporter->execute();
 
         $this->assertCount(2, $bus->messages);
 
-        /** @var ProcessItemMessage $message */
+        /** @var AsyncMessage $message */
         $message = \array_pop($bus->messages);
 
-        $this->assertEquals(static function () {}, $message->getHandleItem());
         $this->assertEquals([
             'author' => 'Ralls, Kim',
             'title' => 'Midnight Rain',

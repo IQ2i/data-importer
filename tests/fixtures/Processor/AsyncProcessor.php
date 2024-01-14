@@ -13,21 +13,12 @@ declare(strict_types=1);
 
 namespace IQ2i\DataImporter\Tests\fixtures\Processor;
 
-use IQ2i\DataImporter\Exchange\Message;
-use IQ2i\DataImporter\Processor\AsyncProcessorInterface;
-use IQ2i\DataImporter\Processor\ProcessorInterface;
+use IQ2i\DataImporter\Bundle\Messenger\AsyncMessage;
+use IQ2i\DataImporter\Bundle\Processor\AbstractAsyncProcessor;
 
-class AsyncProcessor implements ProcessorInterface, AsyncProcessorInterface
+class AsyncProcessor extends AbstractAsyncProcessor
 {
-    public function begin(Message $message)
-    {
-    }
-
-    public function item(Message $message)
-    {
-    }
-
-    public function end(Message $message)
+    public function processItem(AsyncMessage $message)
     {
     }
 }

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use IQ2i\DataImporter\Bundle\Messenger\MessageHandler;
 use IQ2i\DataImporter\Command\GenerateDtoCommand;
 
 return static function (ContainerConfigurator $container) {
@@ -22,8 +21,5 @@ return static function (ContainerConfigurator $container) {
             ->arg('$defaultPath', '%kernel.project_dir%')
             ->arg('$defaultNamespace', 'App\\Dto')
             ->tag('console.command', ['command' => 'iq2i:data-importer:generate-dto'])
-
-        ->set('iq2i_data_importer.messenger.message_handler', MessageHandler::class)
-            ->tag('messenger.message_handler')
     ;
 };
