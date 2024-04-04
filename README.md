@@ -18,7 +18,7 @@ composer require iq2i/data-importer
 
 | Version (X.Y.Z) |    PHP     | Comment             |
 |:---------------:|:----------:|:--------------------|
-|     `4.0.*`     | `>= 8.1.0` | **Current version** |
+|     `4.*.*`     | `>= 8.1.0` | **Current version** |
 |     `3.2.*`     | `>= 7.4.0` | Previous version    |
 
 ## Usage
