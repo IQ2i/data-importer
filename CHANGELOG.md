@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+4.2.0
+-----
+
+* add Symfony 7 compatibility
+* fix command from inside Symfony application
+* rework AsyncProcessor
+
 4.1.0
 -----
 
