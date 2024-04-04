@@ -23,7 +23,7 @@ class CallbackProcessor implements ProcessorInterface
 
     private readonly ?\Closure $end;
 
-    public function __construct(callable $begin = null, callable $item = null, callable $end = null)
+    public function __construct(?callable $begin = null, ?callable $item = null, ?callable $end = null)
     {
         $this->begin = $begin ? $begin(...) : null;
         $this->item = $item ? $item(...) : null;

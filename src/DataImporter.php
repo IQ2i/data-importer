@@ -32,7 +32,7 @@ class DataImporter
         private readonly ReaderInterface $reader,
         private readonly ProcessorInterface $processor,
         private readonly ?ArchiverInterface $archiver = null,
-        SerializerInterface $serializer = null,
+        ?SerializerInterface $serializer = null,
     ) {
         $this->serializer = $serializer ?? new Serializer([new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter())]);
     }

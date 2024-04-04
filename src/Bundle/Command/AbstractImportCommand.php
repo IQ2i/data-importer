@@ -36,7 +36,7 @@ abstract class AbstractImportCommand extends Command
 
     abstract protected function handleItem(): callable;
 
-    abstract protected function getReader(string $filename = null): ReaderInterface;
+    abstract protected function getReader(?string $filename = null): ReaderInterface;
 
     protected function configure(): void
     {

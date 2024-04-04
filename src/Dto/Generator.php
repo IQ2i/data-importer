@@ -25,7 +25,7 @@ class Generator
      */
     private const NAMESPACE = 'App\Dto';
 
-    public function generate(string $class, array $columns, string $namespace = null): string
+    public function generate(string $class, array $columns, ?string $namespace = null): string
     {
         $file = new PhpFile();
         $file->setStrictTypes();
