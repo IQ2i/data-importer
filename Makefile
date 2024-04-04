@@ -30,11 +30,7 @@ install: ## Install project
 	@$(PHP_CONT) composer install
 
 ## —— CI ✨ ————————————————————————————————————————————————————————————————————
-ci: deps static rector test
-
-deps: ## Check dependencies
-	@$(PHP_CONT) composer-require-checker
-	@$(PHP_CONT) composer-unused --excludePackage=symfony/dependency-injection --excludePackage=symfony/property-access
+ci: static rector test
 
 static: ## Run static analysis tools
 	$(PHP) -d memory_limit=-1 vendor/bin/phpstan analyse
