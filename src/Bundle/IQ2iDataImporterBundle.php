@@ -15,6 +15,6 @@ namespace IQ2i\DataImporter\Bundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class Iq2iDataImporterBundle extends Bundle
+class IQ2iDataImporterBundle extends Bundle
 {
 }
