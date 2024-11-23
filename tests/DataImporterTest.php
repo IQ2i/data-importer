@@ -167,7 +167,7 @@ class DataImporterTest extends TestCase
 
     public function testAsyncProcessor()
     {
-        $bus = new class() implements MessageBusInterface {
+        $bus = new class implements MessageBusInterface {
             public array $messages = [];
 
             public array $stamps = [];
