@@ -1,0 +1,6 @@
+services:
+    php:
+        build: .
+        working_dir: /srv/app
+        volumes:
+            - ./:/srv/app:rw,cached
