@@ -20,6 +20,11 @@ class XmlReader implements ReaderInterface
      */
     final public const CONTEXT_XPATH = 'xml_xpath';
 
+    /**
+     * @var string
+     */
+    final public const CONTEXT_NAMESPACES = 'xml_namespaces';
+
     private readonly \SplFileInfo $file;
 
     private \SimpleXMLIterator $iterator;
@@ -28,6 +33,7 @@ class XmlReader implements ReaderInterface
 
     private array $defaultContext = [
         self::CONTEXT_XPATH => null,
+        self::CONTEXT_NAMESPACES => [],
     ];
 
     public function __construct(
@@ -46,22 +52,35 @@ class XmlReader implements ReaderInterface
             $this->iterator = new \SimpleXMLIterator($this->file->getPathname(), 0, true);
         } else {
             $element = new \SimpleXMLElement($this->file->getPathname(), 0, true);
+            $xpath = (string) $this->defaultContext[self::CONTEXT_XPATH];
 
-            $nodes = \explode('/', (string) $this->defaultContext[self::CONTEXT_XPATH]);
-            $rootNode = \array_shift($nodes);
-            if ($rootNode !== $element->getName()) {
-                throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::CONTEXT_XPATH].'" is incorrect.');
+            foreach ($this->defaultContext[self::CONTEXT_NAMESPACES] as $prefix => $uri) {
+                $element->registerXPathNamespace($prefix, $uri);
             }
 
-            foreach ($nodes as $node) {
-                if (!isset($element->{$node})) {
-                    throw new \InvalidArgumentException('The path "'.$this->defaultContext[self::CONTEXT_XPATH].'" is incorrect.');
+            [$rootSegment, $subPath] = \array_pad(\explode('/', $xpath, 2), 2, null);
+
+            $localRootName = \str_contains((string) $rootSegment, ':')
+                ? \substr((string) $rootSegment, \strpos((string) $rootSegment, ':') + 1)
+                : $rootSegment;
+
+            if ($localRootName !== $element->getName()) {
+                throw new \InvalidArgumentException('The path "'.$xpath.'" is incorrect.');
+            }
+
+            if (null !== $subPath) {
+                $results = $element->xpath($subPath);
+                if (empty($results)) {
+                    throw new \InvalidArgumentException('The path "'.$xpath.'" is incorrect.');
                 }
 
-                $element = $element->{$node};
+                $element = $results[0];
             }
 
-            $this->iterator = new \SimpleXMLIterator($element->asXML());
+            $dom = \dom_import_simplexml($element);
+            $doc = new \DOMDocument();
+            $doc->appendChild($doc->importNode($dom, true));
+            $this->iterator = new \SimpleXMLIterator($doc->saveXML());
         }
 
         $this->rewind();
