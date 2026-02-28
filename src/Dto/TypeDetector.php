@@ -23,9 +23,9 @@ class TypeDetector
             return 'int';
         } elseif (\in_array($value, ['0', '1', 'true', 'false'])) {
             return 'bool';
-        } else {
-            return 'string';
         }
+
+        return 'string';
     }
 
     public static function resolve(array $types): string

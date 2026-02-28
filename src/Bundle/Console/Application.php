@@ -15,6 +15,7 @@ namespace IQ2i\DataImporter\Bundle\Console;
 
 use IQ2i\DataImporter\Command\GenerateDtoCommand;
 use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Command\Command;
 
 class Application extends BaseApplication
 {
@@ -24,7 +25,16 @@ class Application extends BaseApplication
 
         $generateDtoCommand = new GenerateDtoCommand();
 
-        $this->add($generateDtoCommand);
+        $this->addCommand($generateDtoCommand);
         $this->setDefaultCommand($generateDtoCommand->getName(), true);
+    }
+
+    public function addCommand(callable|Command $command): Command
+    {
+        if (\method_exists($this, 'add') && $command instanceof Command) {
+            return $this->add($command);
+        }
+
+        return parent::addCommand($command);
     }
 }

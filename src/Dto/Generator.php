@@ -15,6 +15,7 @@ namespace IQ2i\DataImporter\Dto;
 
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PsrPrinter;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 use function Symfony\Component\String\u;
 
@@ -40,9 +41,17 @@ class Generator
                 ->setInitialized();
 
             if (null !== $column['serialized_name']) {
-                $namespace->addUse(\Symfony\Component\Serializer\Annotation\SerializedName::class);
+                if (\class_exists(\Symfony\Component\Serializer\Annotation\SerializedName::class)) {
+                    $namespace->addUse(\Symfony\Component\Serializer\Annotation\SerializedName::class);
+                } else {
+                    $namespace->addUse(SerializedName::class);
+                }
 
-                $property->addAttribute(\Symfony\Component\Serializer\Annotation\SerializedName::class, [$column['serialized_name']]);
+                if (\class_exists(\Symfony\Component\Serializer\Annotation\SerializedName::class)) {
+                    $property->addAttribute(\Symfony\Component\Serializer\Annotation\SerializedName::class, [$column['serialized_name']]);
+                } else {
+                    $property->addAttribute(SerializedName::class, [$column['serialized_name']]);
+                }
             }
         }
 
