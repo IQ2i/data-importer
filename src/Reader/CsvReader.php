@@ -81,15 +81,16 @@ class CsvReader implements ReaderInterface
             $this->defaultContext[self::CONTEXT_ESCAPE_CHAR]
         );
 
+        $this->iterator->rewind();
+
         if (!$this->defaultContext[self::CONTEXT_NO_HEADERS]) {
-            $this->rewind();
             $this->defaultContext[self::CONTEXT_HEADERS] = $this->iterator->current();
+            $this->iterator->next();
         }
 
-        $this->rewind();
-        while ($this->valid()) {
+        while ($this->iterator->valid()) {
             ++$this->count;
-            $this->next();
+            $this->iterator->next();
         }
 
         $this->rewind();
