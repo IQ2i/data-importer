@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace IQ2i\DataImporter\Bundle\Command;
 
 use IQ2i\DataImporter\Archiver\ArchiverInterface;
+use IQ2i\DataImporter\Bundle\Exception\ImportCancelledException;
 use IQ2i\DataImporter\Bundle\Exception\ItemHandlingException;
 use IQ2i\DataImporter\Bundle\Processor\CliProcessor;
 use IQ2i\DataImporter\DataImporter;
@@ -63,6 +64,11 @@ abstract class AbstractImportCommand extends Command
                 $this->getArchiver(),
                 $this->getSerializer()
             ))->execute();
+        } catch (ImportCancelledException $importCancelledException) {
+            $io->newLine(2);
+            $io->warning($importCancelledException->getMessage());
+
+            return Command::SUCCESS;
         } catch (ItemHandlingException $itemHandlingException) {
             $io->newLine(2);
             $io->error($itemHandlingException->getMessage());
