@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace IQ2i\DataImporter\Bundle\Processor;
 
+use IQ2i\DataImporter\Bundle\Exception\ImportCancelledException;
 use IQ2i\DataImporter\Bundle\Exception\ItemHandlingException;
 use IQ2i\DataImporter\Exchange\Message;
 use IQ2i\DataImporter\Processor\BatchProcessorInterface;
@@ -102,8 +103,7 @@ class CliProcessor implements BatchProcessorInterface
         }
 
         if ($this->stepByStep && $message->getCurrentIteration() < $message->getTotalIteration() && !$this->io->confirm('Continue?')) {
-            $this->io->error('Import cancelled');
-            exit;
+            throw new ImportCancelledException('Import cancelled');
         }
     }
 
