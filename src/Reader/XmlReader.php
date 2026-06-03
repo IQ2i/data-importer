@@ -49,9 +49,9 @@ class XmlReader implements ReaderInterface
         $this->defaultContext = \array_merge($this->defaultContext, $defaultContext);
 
         if (null === $this->defaultContext[self::CONTEXT_XPATH]) {
-            $this->iterator = new \SimpleXMLIterator($this->file->getPathname(), 0, true);
+            $this->iterator = new \SimpleXMLIterator($this->file->getPathname(), LIBXML_NONET, true);
         } else {
-            $element = new \SimpleXMLElement($this->file->getPathname(), 0, true);
+            $element = new \SimpleXMLElement($this->file->getPathname(), LIBXML_NONET, true);
             $xpath = (string) $this->defaultContext[self::CONTEXT_XPATH];
 
             foreach ($this->defaultContext[self::CONTEXT_NAMESPACES] as $prefix => $uri) {
